@@ -5,8 +5,7 @@ Sdf thismap(vec3 p){
 	res1.x = d;
 	return res1;
 	}
-	
-	
-	
-	
-	
+
+
+
+
