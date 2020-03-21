@@ -142,7 +142,8 @@
 // For further information see
 // http://www.humus.name/Articles/Persson_LowLevelThinking.pdf and
 // http://www.humus.name/Articles/Persson_LowlevelShaderOptimization.pdf
-#define saturate(x) clamp(x, 0, 1)
+//#define saturate(x) clamp(x, 0, 1)
+float saturate(float x) { return clamp(x, 0, 1); }
 
 // Sign function that doesn't return 0
 float sgn(float x) {
