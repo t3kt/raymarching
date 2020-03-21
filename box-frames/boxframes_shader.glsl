@@ -2,7 +2,7 @@
 // TouchDesigner version by exsstas https://github.com/exsstas/Raymarching-in-TD
 // Adapted by tekt
 
-#include "hg_sdf"
+#include "t_raymarch"
 
 layout (location = 0) out vec4 fragColor;
 
@@ -157,19 +157,6 @@ float sceneSDFInner(vec3 p)
     return scene;
 }
 
-void rotateOnAxis(inout vec3 p, vec3 rotation) {
-    vec2 temp;
-    temp = p.xy;
-    pR(temp, rotation.z);
-    p.xy = temp;
-    temp = p.xz;
-    pR(temp, rotation.y);
-    p.xz = temp;
-    temp = p.yz;
-    pR(temp, rotation.x);
-    p.yz = temp;
-}
-
 float sceneSDF(vec3 p)
 {
     float scene;
@@ -187,14 +174,17 @@ float sceneSDF(vec3 p)
 //    p.z = r * sin(theta);
 
 //    scene = fOpUnionSoft(scene, sceneSDFInner(p), uSmoothK);
-    vec2 temp = p.xy;
-//    pModMirror2(temp, vec2(4, 8));
-    pMirrorOctant(temp, vec2(8, 8));
-    p.xy = temp;
-    rotateOnAxis(p, uRotation);
+    float block = sdBox(p - vec3(0, 0, -18), vec3(150, 150, 8));
+//    float block = fPlane(p, vec3(0, 1, 0), -18);
+
+    pMirrorOctantXY(p, vec2(8, 8));
+
+    vec2 temp;
     temp = p.xy;
-    pModMirror2(temp, vec2(6, 6));
+    pModMirror2(temp, vec2(10, 10));
     p.xy = temp;
+    pRotateOnXYZ(p, uRotation);
+    temp = p.xy;
      scene = sceneSDFInner(p);
 
 //    scene = fOpUnionSoft(scene,sceneSDFInner(
@@ -215,8 +205,6 @@ float sceneSDF(vec3 p)
 //    scene = fOpUnionSoft(scene, sceneSDFInner(p), uSmoothK);
 
 
-    float block = sdBox(p - vec3(0, 0, -18), vec3(150, 150, 8));
-//    float block = fPlane(p, vec3(0, 1, 0), -18);
     scene = fOpUnionSoft(scene, block, uSmoothK*8);
 
     return scene;
