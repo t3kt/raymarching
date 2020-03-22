@@ -179,22 +179,21 @@ float sceneSDF(vec3 p)
 
     pMirrorOctantXY(p, vec2(8, 8));
 
-    vec2 temp;
-    temp = p.xy;
-    pModMirror2(temp, vec2(10, 10));
-    p.xy = temp;
+//    pModPolarZigZagXY(p, 12);
+//    p += vec3(6);
+    pModGridXY(p, vec2(6));
     pRotateOnXYZ(p, uRotation);
-    temp = p.xy;
-     scene = sceneSDFInner(p);
+//    pModMirrorXY(p, vec2(10, 10));
+    scene = sceneSDFInner(p);
 
 //    scene = fOpUnionSoft(scene,sceneSDFInner(
 //        p * vec3(-1, -1, -1)
 //    ), uSmoothK);
-//
+
 //    scene = fOpUnionSoft(scene,sceneSDFInner(
 //        p * vec3(-1, 1, -1)
 //    ), uSmoothK);
-//
+
 //    scene = fOpUnionSoft(scene,sceneSDFInner(
 //        p * vec3(1, 1, -1)
 //    ), uSmoothK);
