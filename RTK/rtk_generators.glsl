@@ -36,7 +36,7 @@ Sdf gen_cylinder(vec3 p, vec3 transform, float radius, float height){
 	res.interpolant = 0.;
 	return res;
 }
-Sdf gen_fGDF(vec3 p, vec3 transform, float exponent, int begin, int end){
+Sdf gen_fGDF(vec3 p, vec3 transform, float exponent, float radius, int begin, int end){
 	p += transform;
 	float d = fGDF(p, radius, exponent, begin, end);
 	Sdf res;
@@ -97,4 +97,4 @@ Sdf gen_torus(vec3 p, vec3 transform, vec2 rad){
 	return res;
 }
 
-#endif RTK_GENERATORS
+#endif // RTK_GENERATORS

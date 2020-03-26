@@ -1,13 +1,8 @@
 Sdf thismap(vec3 p){
-	p.x += @Transformx;
-	p.y += @Transformy;
-	p.z += @Transformz;
-	Sdf res;
-	res.x = fCylinder(p, @Radius, @Height);
-	res.y = 2;
-	res.reflect = false;
-	res.refract = false;
-	res.material2 = 0.;
-	res.interpolant = 0.;
-	return res;
+	return gen_cylinder(
+		p,
+		vec3(@Transformx, @Transformy, @Transformz),
+		@Radius,
+		@Height
+	);
 }
