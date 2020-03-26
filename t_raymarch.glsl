@@ -1,4 +1,5 @@
 #include "hg_sdf"
+#include "rtk_common"
 
 float map(float value, float inMin, float inMax, float outMin, float outMax) {
   return outMin + (outMax - outMin) * (value - inMin) / (inMax - inMin);
@@ -140,12 +141,3 @@ void pModPolarZigZagYZ(inout vec3 p, float repetitions) {
 }
 
 
-vec3 opTwist(vec3 p, float k){
-	// const float k = 10.0;
-	float c = cos(k*p.y);
-	float s = sin(k*p.y);
-	mat2 m = mat2(c,-s,s,c);
-	vec3 q = vec3(m*p.xy, p.y);
-	return q;
-
-}

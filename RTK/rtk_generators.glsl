@@ -97,4 +97,16 @@ Sdf gen_torus(vec3 p, vec3 transform, vec2 rad){
 	return res;
 }
 
+Sdf gen_quadFrameSmoothXY(vec3 p, vec3 transform, vec2 scale, float radius) {
+	Sdf res;
+	//...
+	return res;
+}
+
+Sdf gen_boxFrameSmooth(vec3 p, vec3 transform, vec3 scale) {
+	Sdf res;
+	//....
+	return res;
+}
+
 #endif // RTK_GENERATORS

@@ -177,7 +177,7 @@ float sceneSDF(vec3 p)
     float block = sdBox(p - vec3(0, 0, -18), vec3(150, 150, 8));
 //    float block = fPlane(p, vec3(0, 1, 0), -18);
 
-    pMirrorOctantXY(p, vec2(8, 8));
+//    pMirrorOctantXY(p, vec2(8, 8));
 
 //    pModPolarZigZagXY(p, 12);
 //    p += vec3(6);
