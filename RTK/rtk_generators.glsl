@@ -54,16 +54,43 @@ Sdf gen_torus(vec3 p, vec3 transform, vec2 rad){
 	return _gen_createSdf(fTorus(p + transform, rad.x, rad.y-0.1));
 }
 
-Sdf gen_quadFrameSmoothXY(vec3 p, vec3 transform, vec2 scale, float radius, float smoothing) {
-	Sdf res;
-	//...
-	return res;
+Sdf gen_quadFrameSmooth(vec3 p, vec3 transform, vec2 size, float radius, float smoothing) {
+	return _gen_createSdf(fQuadFrameSmooth(p + transform, size, radius, smoothing));
 }
 
-Sdf gen_boxFrameSmooth(vec3 p, vec3 transform, vec3 scale) {
-	Sdf res;
-	//....
-	return res;
+Sdf gen_boxFrameSmooth(vec3 p, vec3 transform, vec3 size, float radius, float smoothing) {
+	p += transform;
+	// front quad frame
+	float dist = fQuadFrameSmooth(
+		p - vec3(0, 0, 0.5 * size.z),
+		size.xy,
+		radius, smoothing);
+	// back quad frame
+	dist = fOpUnionSoft(dist, fQuadFrameSmooth(
+		p + vec3(0, 0, 0.5 * size.z),
+		size.xy,
+		radius, smoothing), smoothing);
+	// top left front-back
+	dist = fOpUnionSoft(dist, fCapsule(p,
+		size * vec3(-0.5, 0.5, -0.5),
+		size * vec3(-0.5, 0.5, 0.5),
+		radius), smoothing);
+	// top right front-back
+	dist = fOpUnionSoft(dist, fCapsule(p,
+		size * vec3(0.5, 0.5, -0.5),
+		size * vec3(0.5, 0.5, 0.5),
+		radius), smoothing);
+	// bottom left front-back
+	dist = fOpUnionSoft(dist, fCapsule(p,
+		size * vec3(-0.5, -0.5, -0.5),
+		size * vec3(-0.5, -0.5, 0.5),
+		radius), smoothing);
+	// bottom right front-back
+	dist = fOpUnionSoft(dist, fCapsule(p,
+		size * vec3(0.5, -0.5, -0.5),
+		size * vec3(0.5, -0.5, 0.5),
+		radius), smoothing);
+	return _gen_createSdf(dist);
 }
 
 #endif // RTK_GENERATORS

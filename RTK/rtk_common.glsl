@@ -98,3 +98,27 @@ Sdf opSmoothUnionM( Sdf d1, Sdf d2, float k ) {
     return res;//vec2(resx, resy); }
 }
 
+float fQuadFrameSmooth(vec3 p, vec2 size, float radius, float smoothing) {
+	// top left-right
+	float dist = fCapsule(p,
+		vec3(size * vec2(-0.5, 0.5), 0),
+		vec3(size * vec2(0.5, 0.5), 0),
+		radius);
+	// bottom left-right
+	dist = fOpUnionSoft(dist, fCapsule(p,
+		vec3(size * vec2(-0.5, -0.5), 0),
+		vec3(size * vec2(0.5, -0.5), 0),
+		radius), smoothing);
+	// top-bottom left
+	dist = fOpUnionSoft(dist, fCapsule(p,
+		vec3(size * vec2(-0.5, 0.5), 0),
+		vec3(size * vec2(-0.5, -0.5), 0),
+		radius), smoothing);
+	// top-bottom right
+	dist = fOpUnionSoft(dist, fCapsule(p,
+		vec3(size * vec2(0.5, 0.5), 0),
+		vec3(size * vec2(0.5, -0.5), 0),
+		radius), smoothing);
+	return dist;
+}
+
