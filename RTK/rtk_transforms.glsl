@@ -60,7 +60,7 @@ vec3 trans_rotate(vec3 p, float amount, vec3 axis){
 	return p;
 }
 
-//vec3 trans_round(inout vec3 p, float round){
+//vec3 trans_round(vec3 p, float round){
 //
 //	// p.x -= @Transformx;
 //	// p.y -= @Transformy;
@@ -79,7 +79,7 @@ vec3 trans_rotate(vec3 p, float amount, vec3 axis){
 //	return res;
 //}
 //
-vec3 trans_sine(vec3 p, vec3 period, vec3 transform, vec3 scale){
+vec3 trans_sine(vec3 p, float period, vec3 transform, vec3 scale){
 	p.x += sin(p.y*period+transform.x)*scale.x;
 	p.y += sin(p.z*period+transform.y)*scale.y;
 	p.z += sin(p.x*period+transform.x)*scale.z;

@@ -1,4 +1,4 @@
-Sdf thismap(vec3 p){
+Sdf thismap(vec3 p) {
 	p = trans_textureNoise(
 		p,
 		int(@Texindex),
@@ -6,9 +6,4 @@ Sdf thismap(vec3 p){
 		vec3(@Scalex, @Scaley, @Scalez)
 	);
 	return inputOp1(p);
-	}
-		
-
-
-	
-	
+}

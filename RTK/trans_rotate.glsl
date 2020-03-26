@@ -1,10 +1,4 @@
-Sdf thismap(vec3 p){
-	mat3 m = TDRotateOnAxis(@Amount, vec3(@Axisx, @Axisy, @Axisz));
-	p *= m;
+Sdf thismap(vec3 p) {
+	p = trans_rotate(p, @Amount,  vec3(@Axisx, @Axisy, @Axisz));
 	return inputOp1(p);
-	}
-		
-
-
-	
-	
+}

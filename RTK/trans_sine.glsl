@@ -1,12 +1,4 @@
-Sdf thismap(vec3 p){
-	p.x += sin(p.y*@Period+@Transformx)*@Scalex;
-	p.y += sin(p.z*@Period+@Transformy)*@Scaley;
-	p.z += sin(p.x*@Period+@Transformx)*@Scalez;
-
+Sdf thismap(vec3 p) {
+	p = trans_sine(p, @Period, vec3(@Transformx, @Transformy, @Transformz), vec3(@Scalex, @Scaley, @Scalez));
 	return inputOp1(p);
-	}
-		
-
-
-	
-	
+}
