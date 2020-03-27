@@ -92,8 +92,12 @@ vec3 trans_textureNoise(vec3 p, int texIndex, float period, vec3 scale){
 	return p;
 }
 
-vec3 trans_translate(vec3 p, vec3 transform){
+vec3 trans_translate(vec3 p, vec3 transform) {
 	p -= transform;
+	return p;
+}
+vec3 trans_reflect(vec3 p, vec3 planeNormal, float offset) {
+	pReflect(p, planeNormal, offset);
 	return p;
 }
 
