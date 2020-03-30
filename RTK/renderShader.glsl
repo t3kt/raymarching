@@ -11,7 +11,7 @@ uniform vec3 lights[5];
 
 out vec4 fragColor;
 out vec4 depthBuffer;
-#define saturate(x) clamp(x, 0, 1)
+//#define saturate(x) clamp(x, 0, 1)
 
 Sdf map( vec3 q )
 {
