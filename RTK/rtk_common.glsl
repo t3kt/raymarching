@@ -17,6 +17,18 @@ struct Sdf
 	float ior; // index of refraction in case of refraction
 };
 
+Sdf createSdf(float dist) {
+	float matID = 2;
+	Sdf res;
+	res.x = dist;
+	res.y = matID;
+	res.reflect = false;
+	res.refract = false;
+	res.material2 = 0.;
+	res.interpolant = 0.;
+	return res;
+}
+
 
 
 vec3 opTwist(vec3 p, float k){
@@ -96,6 +108,21 @@ Sdf opSmoothUnionM( Sdf d1, Sdf d2, float k ) {
     // res.refract = false;
     // res.reflect = false;
     return res;//vec2(resx, resy); }
+}
+
+Sdf opUnionSoft(Sdf d1, Sdf d2, float k) {
+	// this line is just copied over from opSmoothUnionM... not sure if it's correct
+    float h = clamp( 0.5 + 0.5*(d2.x-d1.x)/k, 0.0, 1.0 );
+	Sdf res;
+	res.x = fOpUnionSoft(d1.x, d2.x, k);
+	res.y = d2.y;
+  res.material2 = d1.y;
+  res.interpolant = h;
+  res.refract = d1.refract || d2.refract;
+  res.reflect = d1.reflect || d2.reflect;
+  // res.refract = false;
+  // res.reflect = false;
+  return res;//vec2(resx, resy); }
 }
 
 float fQuadFrameSmooth(vec3 p, vec2 size, float radius, float smoothing) {
