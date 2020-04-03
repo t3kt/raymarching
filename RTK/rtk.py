@@ -4,10 +4,11 @@ if False:
 	# noinspection PyUnresolvedReferences
 	from _stubs import *
 
-class RtkExt:
+class _Extension:
 	def __init__(self, ownerComp):
 		self.ownerComp = ownerComp
 
+class RtkExt(_Extension):
 	def ReloadTextures(self):
 		textureTable = self.ownerComp.op('textureTable')
 		textureTable.clear()
@@ -20,10 +21,3 @@ class RtkExt:
 			if 'texture' in child.name.lower():
 				textureTable.appendRow([j, child])
 				j += 1
-
-def _BuildDefinesFromTable(outDat: 'textDAT', table: 'DAT'):
-	outDat.clear()
-	outDat.text = '\n'.join([
-		f'#define {table[i, 0]} {table[i, 1]}'
-		for i in range(table.numRows)
-	])
