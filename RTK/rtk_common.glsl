@@ -48,8 +48,21 @@ float opOnion(float d, float thickness){
 }
 
 
+float fGyroid(vec3 p, float scale, float bias, float thickness) {
+    p *= scale;
+    float d = abs(dot(sin(p), cos(p.yzx))+bias)-thickness;
+    return d/scale;
+}
 
 
+void pModTorus_maybeXZ(inout vec3 p, float repetitions) {
+	p = vec3(length(p.xz)-repetitions, p.y, atan(p.x, p.z));
+}
+
+void pModTorus_maybeXY(inout vec3 p, float repetitions) {
+	float angle = 2*PI/repetitions;
+	p = vec3(length(p.xy)-angle, atan(p.x, p.y), p.z);
+}
 
 
 float hash1( float n )
