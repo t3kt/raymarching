@@ -7,7 +7,12 @@ uniform float gridOffset;
 uniform float FOV;
 uniform mat4 camMat;
 uniform int displayGrid;
-uniform vec3 lights[5];
+
+#ifndef LIGHT_COUNT
+#define LIGHT_COUNT 5
+#endif
+
+uniform vec3 lights[LIGHT_COUNT];
 
 out vec4 fragColor;
 out vec4 depthBuffer;

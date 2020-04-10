@@ -1,5 +1,10 @@
 // uniform float params[100];
-uniform vec3 lights[1];
+
+#ifndef LIGHT_COUNT
+#define LIGHT_COUNT 5
+#endif
+uniform vec3 lights[LIGHT_COUNT];
+
 uniform vec2 iResolution;
 uniform float iTime;
 uniform vec3 camPos;
