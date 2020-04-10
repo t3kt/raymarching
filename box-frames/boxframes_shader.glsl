@@ -174,7 +174,7 @@ float sceneSDF(vec3 p)
 //    p.z = r * sin(theta);
 
 //    scene = fOpUnionSoft(scene, sceneSDFInner(p), uSmoothK);
-    float block = sdBox(p - vec3(0, 0, -18), vec3(150, 150, 8));
+    float block = sdBox(p - vec3(0, 0, -22), vec3(150, 150, 8));
 //    float block = fPlane(p, vec3(0, 1, 0), -18);
 
 //    pMirrorOctantXY(p, vec2(8, 8));
@@ -188,7 +188,9 @@ float sceneSDF(vec3 p)
     int N = 6;
     for (int i = 0; i < N; ++i) {
 //        p = abs(p) - 1;
-    pMirrorOctantXY(p, vec2(3, 3));
+    pMirrorOctantXY(p, vec2(4));
+//    pMirrorOctantYZ(p, vec2(3, 3));
+//        pReflect(p, vec3(1,1, 0.5), 12);
         pRotateOnXYZ(p, uRotation);
     }
 
@@ -213,7 +215,7 @@ float sceneSDF(vec3 p)
 //    scene = fOpUnionSoft(scene, sceneSDFInner(p), uSmoothK);
 
 
-    scene = fOpUnionSoft(scene, block, uSmoothK*8);
+//    scene = fOpUnionSoft(scene, block, uSmoothK*8);
 
     return scene * 0.8;
 }
