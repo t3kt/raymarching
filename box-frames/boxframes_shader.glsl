@@ -23,6 +23,7 @@ uniform vec4 uPlane;					// XYZ position and size of a plane
 uniform float uFrameWidth = 0.5;
 uniform float uFrameSmooth = 0.1;
 uniform vec3 uRotation = vec3(0);
+uniform vec3 uPostRotation = vec3(0);
 
 // Camera and color parameters
 uniform vec4 uCamera;					// XYZ position + Field of view for a camera
@@ -174,7 +175,7 @@ float sceneSDF(vec3 p)
 //    p.z = r * sin(theta);
 
 //    scene = fOpUnionSoft(scene, sceneSDFInner(p), uSmoothK);
-    float block = sdBox(p - vec3(0, 0, -22), vec3(150, 150, 8));
+    float block = sdBox(p - vec3(0, 0, -30), vec3(1000, 1000, 8));
 //    float block = fPlane(p, vec3(0, 1, 0), -18);
 
 //    pMirrorOctantXY(p, vec2(8, 8));
@@ -184,15 +185,18 @@ float sceneSDF(vec3 p)
 //    p += vec3(6);
 //    pModGridXY(p, vec2(6));
 
+        pRotateOnXYZ(p, uPostRotation);
 //    pRotateOnXYZ(p, uRotation);
-    int N = 6;
+    int N = 4;
     for (int i = 0; i < N; ++i) {
 //        p = abs(p) - 1;
-    pMirrorOctantXY(p, vec2(4));
 //    pMirrorOctantYZ(p, vec2(3, 3));
 //        pReflect(p, vec3(1,1, 0.5), 12);
+    pMirrorOctantXY(p, vec2(8));
         pRotateOnXYZ(p, uRotation);
+//    p += vec3(4, 0, 0);
     }
+    pMirrorOctantXY(p, vec2(4));
 
 //    pModMirrorXY(p, vec2(10, 10));
     scene = sceneSDFInner(p);
@@ -215,7 +219,7 @@ float sceneSDF(vec3 p)
 //    scene = fOpUnionSoft(scene, sceneSDFInner(p), uSmoothK);
 
 
-//    scene = fOpUnionSoft(scene, block, uSmoothK*8);
+    scene = fOpUnionSoft(scene, block, uSmoothK*8);
 
     return scene * 0.8;
 }
