@@ -170,3 +170,18 @@ float fQuadFrameSmooth(vec3 p, vec2 size, float radius, float smoothing) {
 	return dist;
 }
 
+mat3 rotateMatrix(vec3 r) {
+	return TDRotateOnAxis(r.x, vec3(1, 0, 0)) *
+		TDRotateOnAxis(r.y, vec3(0, 1, 0)) *
+		TDRotateOnAxis(r.z, vec3(0, 0, 1));
+}
+
+vec3 scaleRotateTranslate(vec3 pos, vec3 scale, vec3 rotate, vec3 translate, vec3 pivot) {
+	pos -= pivot;
+	pos *= rotateMatrix(rotate);
+	pos *= scale;
+	pos += translate;
+	pos += pivot;
+	return pos;
+}
+
