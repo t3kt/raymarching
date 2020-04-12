@@ -32,6 +32,12 @@ struct Context {
 	int iteration;
 };
 
+Context defaultContext() {
+	Context ctx;
+	ctx.iteration = 0;
+	return ctx;
+}
+
 
 vec3 opTwist(vec3 p, float k){
 	// const float k = 10.0;
