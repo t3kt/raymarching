@@ -1,5 +1,5 @@
-#ifndef RTK_TRANFORMS
-#define RTK_TRANFORMS
+//#ifndef RTK_TRANFORMS
+//#define RTK_TRANFORMS
 
 vec3 trans_elongate(vec3 p, vec3 length){
 	vec3 h = length;
@@ -31,6 +31,60 @@ vec3 trans_moduloZ(vec3 p, float size){
 	float c = floor((q + halfsize)/size);
 	q = mod(q + halfsize, size) - halfsize;
 	p.z  = q;
+	return p;
+}
+
+vec3 trans_moduloX(vec3 p, vec3 size, float mirror) {
+	float temp = p.x;
+	if (mirror > 0.5) { pModMirror1(temp, size.x); }
+	else { pMod1(temp, size.x); }
+	p.x = temp;
+	return p;
+}
+
+vec3 trans_moduloY(vec3 p, vec3 size, float mirror) {
+	float temp = p.y;
+	if (mirror > 0.5) { pModMirror1(temp, size.y); }
+	else { pMod1(temp, size.y); }
+	p.y = temp;
+	return p;
+}
+
+vec3 trans_moduloZ(vec3 p, vec3 size, float mirror) {
+	float temp = p.z;
+	if (mirror > 0.5) { pModMirror1(temp, size.z); }
+	else { pMod1(temp, size.z); }
+	p.z = temp;
+	return p;
+}
+
+vec3 trans_moduloXY(vec3 p, vec3 size, float mirror) {
+	vec2 temp = p.xy;
+	if (mirror > 0.5) { pModMirror2(temp, size.xy); }
+	else { pMod2(temp, size.xy); }
+	p.xy = temp;
+	return p;
+}
+
+vec3 trans_moduloXZ(vec3 p, vec3 size, float mirror) {
+	vec2 temp = p.xz;
+	if (mirror > 0.5) { pModMirror2(temp, size.xz); }
+	else { pMod2(temp, size.xz); }
+	p.xz = temp;
+	return p;
+}
+
+vec3 trans_moduloYZ(vec3 p, vec3 size, float mirror) {
+	vec2 temp = p.yz;
+	if (mirror > 0.5) { pModMirror2(temp, size.yz); }
+	else { pMod2(temp, size.yz); }
+	p.yz = temp;
+	return p;
+}
+
+vec3 trans_moduloXYZ(vec3 p, vec3 size, float mirror) {
+	// TODO: MIRROR SUPPORT
+	pMod3(p, size);
 	return p;
 }
 
@@ -101,4 +155,5 @@ vec3 trans_reflect(vec3 p, vec3 planeNormal, float offset) {
 	return p;
 }
 
-#endif // RTK_TRANFORMS
+
+//#endif // RTK_TRANFORMS
