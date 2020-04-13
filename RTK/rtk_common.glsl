@@ -176,7 +176,7 @@ mat3 rotateMatrix(vec3 r) {
 		TDRotateOnAxis(r.z, vec3(0, 0, 1));
 }
 
-vec3 scaleRotateTranslate(vec3 pos, vec3 scale, vec3 rotate, vec3 translate, vec3 pivot) {
+vec3 scaleRotateTranslate(vec3 pos, vec3 translate, vec3 rotate, vec3 scale, vec3 pivot) {
 	pos -= pivot;
 	pos *= rotateMatrix(rotate);
 	pos *= scale;
