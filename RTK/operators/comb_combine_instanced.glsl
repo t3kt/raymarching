@@ -10,11 +10,21 @@ vec3 thismap__transform(vec3 p, Context ctx, int n) {
 	vec3 r = texelFetch(thismap_instances, ctx.iteration + n).rgb;
 	vec3 s = texelFetch(thismap_instances, ctx.iteration + n * 2).rgb;
 	vec3 pivot = texelFetch(thismap_instances, ctx.iteration + n * 3).rgb;
+//	vec3 t = texelFetch(thismap_instances_t, ctx.iteration).rgb;
+//	vec3 r = texelFetch(thismap_instances_r, ctx.iteration).rgb;
+//	vec3 s = texelFetch(thismap_instances_s, ctx.iteration).rgb;
+//	vec3 pivot = texelFetch(thismap_instances_p, ctx.iteration).rgb;
+	
+//	t *= 0;
+//	t+=vec3(0.4, 0, 0)*ctx.iteration;
+	//r *= 0;
+	//+vec3(50,0,0)*ctx.iteration)
+//	s = vec3(1);
 	return scaleRotateTranslate(p,
-		t+vec3(0, 0, 0)*ctx.iteration,
-		r+vec3(50,0,0)*ctx.iteration,
-		vec3(1),//s,
-		pivot + p
+		t,
+		radians(r),
+		1/s,
+		pivot
 	);
 }
 Sdf thismap(vec3 p, Context ctx) {
