@@ -1,4 +1,4 @@
-Sdf thismap(vec3 p) {
+Sdf thismap(vec3 p, Context ctx) {
 	p = scaleRotateTranslate(
 		p,
 		vec3(@Scalex, @Scaley, @Scalez),
@@ -6,5 +6,5 @@ Sdf thismap(vec3 p) {
 		vec3(@Translatex, @Translatey, @Translatez),
 		vec3(@Pivotx, @Pivoty, @Pivotz)
 	);
-	return inputOp1(p);
+	return inputOp1(p, ctx);
 }
