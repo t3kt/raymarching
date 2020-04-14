@@ -187,16 +187,16 @@ float sceneSDF(vec3 p)
 
         pRotateOnXYZ(p, uPostRotation);
 //    pRotateOnXYZ(p, uRotation);
-    int N = 4;
-    for (int i = 0; i < N; ++i) {
-//        p = abs(p) - 1;
-//    pMirrorOctantYZ(p, vec2(3, 3));
-//        pReflect(p, vec3(1,1, 0.5), 12);
-    pMirrorOctantXY(p, vec2(8));
-        pRotateOnXYZ(p, uRotation);
-//    p += vec3(4, 0, 0);
-    }
-    pMirrorOctantXY(p, vec2(4));
+//    int N = 4;
+//    for (int i = 0; i < N; ++i) {
+////        p = abs(p) - 1;
+////    pMirrorOctantYZ(p, vec2(3, 3));
+////        pReflect(p, vec3(1,1, 0.5), 12);
+//    pMirrorOctantXY(p, vec2(8));
+//        pRotateOnXYZ(p, uRotation);
+////    p += vec3(4, 0, 0);
+//    }
+//    pMirrorOctantXY(p, vec2(4));
 
 //    pModMirrorXY(p, vec2(10, 10));
     scene = sceneSDFInner(p);
