@@ -3,18 +3,32 @@ if False:
 	# noinspection PyUnresolvedReferences
 	from _stubs import *
 
-def buildBufferTable(dat: 'DAT', bufferSpecs: 'DAT'):
+def buildBufferTable(dat: 'DAT', specTable: 'DAT'):
 	dat.clear()
 	dat.appendRow(['name', 'chop', 'type'])
-	raise NotImplementedError()
+	if not specTable.numRows or not specTable.numCols:
+		return
+	for cell in specTable.col(0):
+		if not cell.val:
+			continue
+		specs = cell.val.split(' ')
+		for spec in specs:
+			if not spec:
+				continue
+			parts = spec.split(':')
+			dat.appendRow([
+				parts[0],
+				parts[1],
+				parts[2] if len(parts) > 2 else 'float',
+			])
 
-def buildTextureTable(dat: 'DAT', specs: 'DAT'):
+def buildTextureTable(dat: 'DAT', specTable: 'DAT'):
 	dat.clear()
 	dat.appendRow(['name', 'top', 'aliases'])
-	if not specs.numRows or not specs.numCols:
+	if not specTable.numRows or not specTable.numCols:
 		return
 	namesByPath = {}
-	for cell in specs.col(0):
+	for cell in specTable.col(0):
 		if not cell.val:
 			continue
 		specs = cell.val.split(' ')
@@ -26,9 +40,54 @@ def buildTextureTable(dat: 'DAT', specs: 'DAT'):
 					namesByPath[path] = [name]
 				elif name not in namesByPath[path]:
 					namesByPath[path].append(name)
-		for path, names in namesByPath.items():
+	for path, names in namesByPath.items():
+		dat.appendRow([
+			names[0],
+			path,
+			' '.join(names[1:])
+		])
+
+def buildShaderExports(dat):
+	dat.clear()
+	dat.appendRow(['path', 'parameter', 'value'])
+	i = 0
+	# don't directly reference the chop using `op()` since that may introduce
+	# a dependency causing extra cooks
+	_addArray(
+		dat, i, 'params',
+		parent().path + '/param_vals',
+		'float', 'uniformarray')
+	i += 1
+	_addArray(
+		dat, i, 'lights',
+		parent().par.Lightschop.eval().path if parent().par.Lightschop else '',
+		'vec3', 'uniformarray')
+	i += 1
+	buffTbl = op('buffer_table')
+	for row in range(1, buffTbl.numRows):
+		_addArray(
+			dat, i,
+			buffTbl[row, 'name'].val,
+			buffTbl[row, 'chop'].val,
+			buffTbl[row, 'type'].val,
+			'texturebuffer')
+		i += 1
+
+def _addArray(dat, i, name, chop, unitType, mode):
+	dat.appendRow(['@', f'chopuniname{i}', repr(name)])
+	dat.appendRow(['@', f'chopunitype{i}', unitType])
+	dat.appendRow(['@', f'chop{i}', repr(chop)])
+	dat.appendRow(['@', f'choparraytype{i}', mode])
+
+def buildTextureDefs(dat: 'DAT', textureTable: 'DAT'):
+	dat.clear()
+	offset = int(parent().par.Textureindexoffset)
+	for i in range(1, textureTable.numRows):
+		names = [textureTable[i, 'name'].val]
+		aliases = textureTable[i, 'aliases'].val
+		if aliases:
+			names += aliases.split(' ')
+		for name in names:
 			dat.appendRow([
-				names[0],
-				path,
-				' '.join(names[1:])
+				f'#define {name} sTD2DInputs[{offset + i - 1}]'
 			])
