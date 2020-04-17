@@ -141,8 +141,8 @@ vec3 trans_sine(vec3 p, float period, vec3 transform, vec3 scale){
 	return p;
 }
 
-vec3 trans_textureNoise(vec3 p, int texIndex, float period, vec3 scale){
-	p += texture(sTD2DInputs[texIndex], (p.xz)*period).rgb*scale;//TDPerlinNoise(vec3(p.x*period+transform.x, p.y*period+transform.y,p.z*period+transform.z))*scale;
+vec3 trans_textureNoise(vec3 p, sampler2D tex, float period, vec3 scale) {
+	p += texture(tex, (p.xz)*period).rgb*scale;//TDPerlinNoise(vec3(p.x*period+transform.x, p.y*period+transform.y,p.z*period+transform.z))*scale;
 	return p;
 }
 
