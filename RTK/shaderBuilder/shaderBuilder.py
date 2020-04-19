@@ -1,3 +1,5 @@
+import re
+
 # noinspection PyUnreachableCode
 if False:
 	# noinspection PyUnresolvedReferences
@@ -91,3 +93,10 @@ def buildTextureDefs(dat: 'DAT', textureTable: 'DAT'):
 			dat.appendRow([
 				f'#define {name} sTD2DInputs[{offset + i - 1}]'
 			])
+
+def stripComments(code):
+	if not code:
+		return ''
+	code = re.sub(r'//.*?$', '', code, flags=re.MULTILINE)
+	code = re.sub(r'\n\n+', r'\n', code)
+	return code
