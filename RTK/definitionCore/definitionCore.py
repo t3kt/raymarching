@@ -5,6 +5,21 @@ if False:
 	# noinspection PyUnresolvedReferences
 	from _stubs import *
 
+def buildName():
+	d = parent()
+	host = d.par.Hostop.eval()
+	if not host:
+		return ''
+	pathParts = host.path[1:].split('/')
+	for i in range(len(pathParts)):
+		if pathParts[i].startswith('_'):
+			pathParts[i] = 'U' + pathParts[i][1:]
+	name = '_'.join(pathParts)
+	name = re.sub('_+', '_', name)
+	if name.startswith('_'):
+		name = 'o_' + name
+	return name
+
 def prepareBufferTable(dat):
 	dat.clear()
 	table = dat.inputs[0]
@@ -22,17 +37,6 @@ def prepareTextureTable(dat):
 		'{}_{}:{}'.format(name, table[i, 0], table[i, 1])
 		for i in range(table.numRows)
 	])
-
-def addContextualFunctionWrapper(dat):
-	dat.copy(dat.inputs[0])
-	code = dat.text
-	if not code:
-		return
-	if not re.search(r'\bContext\b', code):
-		code += ' Sdf thismap(vec3 p, Context ctx) {return thismap(p);}'
-	else:
-		code += ' Sdf thismap(vec3 p) { return thismap(p, defaultContext()); }'
-	dat.text = code
 
 _lineCommentRx = re.compile('//.*\n')
 _spaceRx = re.compile('\\s+')

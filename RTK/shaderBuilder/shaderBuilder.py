@@ -98,5 +98,13 @@ def stripComments(code):
 	if not code:
 		return ''
 	code = re.sub(r'//.*?$', '', code, flags=re.MULTILINE)
+	return code
+
+def prepareCode(code):
+	if not code:
+		return ''
+	code = code.replace('\\n', '\n')
+	code = code.replace('\n \n', '\n')
 	code = re.sub(r'\n\n+', r'\n', code)
 	return code
+
