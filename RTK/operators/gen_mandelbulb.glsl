@@ -1,5 +1,7 @@
 Sdf thismap(vec3 p, Context ctx){
 	return gen_mandelbulb(
 		p,
-		vec3(@Translatex, @Translatey, @Translatez));
+		vec3(@Translatex, @Translatey, @Translatez),
+		@Power,
+		vec2(@Thetashift, @Phishift));
 }
