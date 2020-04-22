@@ -185,3 +185,10 @@ vec3 scaleRotateTranslate(vec3 pos, vec3 translate, vec3 rotate, vec3 scale, vec
 	return pos;
 }
 
+float sdCross(vec3 p, vec3 size )
+{
+  float da = fBox2(p.xy,size.xy);
+  float db = fBox2(p.yz,size.yz);
+  float dc = fBox2(p.zx,size.zx);
+  return min(da,min(db,dc));
+}
