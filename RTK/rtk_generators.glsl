@@ -21,8 +21,12 @@ Sdf gen_cone(vec3 p, vec3 transform, float radius, float height) {
 	return createSdf(fCone(p + transform, radius, height));
 }
 
-Sdf gen_fGDF(vec3 p, vec3 transform, float exponent, float radius, int begin, int end) {
-	return createSdf(fGDF(p + transform, radius, exponent, begin, end));
+Sdf gen_fGDF(vec3 p, vec3 transform, float exponent, float radius, int begin, int end, bool useExponent) {
+	if (useExponent) {
+		return createSdf(fGDF(p + transform, radius, exponent, begin, end));
+	} else {
+		return createSdf(fGDF(p + transform, radius, begin, end));
+	}
 }
 
 Sdf gen_planeInfY(vec3 p, vec3 transform) {
