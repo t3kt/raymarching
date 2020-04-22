@@ -42,6 +42,11 @@ Sdf gen_torus(vec3 p, vec3 transform, vec2 rad){
 	return createSdf(fTorus(p + transform, rad.x, rad.y-0.1));
 }
 
+Sdf gen_disc(vec3 p, vec3 translate, float radius) {
+	p += translate;
+	return createSdf(fDisc(p, radius));
+}
+
 Sdf gen_quadFrameSmooth(vec3 p, vec3 transform, vec2 size, float radius, float smoothing) {
 	return createSdf(fQuadFrameSmooth(p + transform, size, radius, smoothing));
 }
