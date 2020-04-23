@@ -341,6 +341,8 @@ float fCone(vec3 p, float radius, float height) {
 	return d;
 }
 
+#ifdef RTK_USE_GDF
+
 //
 // "Generalized Distance Functions" by Akleman and Chen.
 // see the Paper at https://www.viz.tamu.edu/faculty/ergun/research/implicitmodeling/papers/sm99.pdf
@@ -435,6 +437,8 @@ float fTruncatedOctahedron(vec3 p, float r) {
 float fTruncatedIcosahedron(vec3 p, float r) {
 	return fGDF(p, r, 3, 18);
 }
+
+#endif // RTK_USE_GDF
 
 
 ////////////////////////////////////////////////////////////////

@@ -21,6 +21,8 @@ Sdf gen_cone(vec3 p, vec3 transform, float radius, float height) {
 	return createSdf(fCone(p + transform, radius, height));
 }
 
+#ifdef RTK_USE_GDF
+
 Sdf gen_fGDF(vec3 p, vec3 transform, float exponent, float radius, int begin, int end, bool useExponent) {
 	if (useExponent) {
 		return createSdf(fGDF(p + transform, radius, exponent, begin, end));
@@ -28,6 +30,8 @@ Sdf gen_fGDF(vec3 p, vec3 transform, float exponent, float radius, int begin, in
 		return createSdf(fGDF(p + transform, radius, begin, end));
 	}
 }
+
+#endif // RTK_USE_GDF
 
 Sdf gen_planeInfY(vec3 p, vec3 transform) {
 	return createSdf((p + transform).y);
@@ -50,6 +54,8 @@ Sdf gen_disc(vec3 p, vec3 translate, float radius) {
 	p += translate;
 	return createSdf(fDisc(p, radius));
 }
+
+#ifdef RTK_USE_MANDELBULB
 
 Sdf gen_mandelbulb(vec3 p, vec3 translate, float power, vec2 shiftThetaPhi)
 {
@@ -114,6 +120,8 @@ Sdf gen_mandelbulb(vec3 p, vec3 translate, float power, vec2 shiftThetaPhi)
 //
 //	return createSdf(0.25*log(m)*sqrt(m)/dz);
 }
+
+#endif // RTK_USE_MANDELBULB
 
 Sdf gen_quadFrameSmooth(vec3 p, vec3 transform, vec2 size, float radius, float smoothing) {
 	return createSdf(fQuadFrameSmooth(p + transform, size, radius, smoothing));
