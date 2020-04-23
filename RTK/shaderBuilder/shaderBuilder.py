@@ -13,7 +13,7 @@ def buildBufferTable(dat: 'DAT', specTable: 'DAT'):
 	for cell in specTable.col(0):
 		if not cell.val:
 			continue
-		specs = cell.val.split(' ')
+		specs = cell.val.split('$')
 		for spec in specs:
 			if not spec:
 				continue
@@ -33,7 +33,7 @@ def buildTextureTable(dat: 'DAT', specTable: 'DAT'):
 	for cell in specTable.col(0):
 		if not cell.val:
 			continue
-		specs = cell.val.split(' ')
+		specs = cell.val.split('$')
 		for spec in specs:
 			if spec:
 				parts = spec.split(':')
@@ -48,6 +48,23 @@ def buildTextureTable(dat: 'DAT', specTable: 'DAT'):
 			path,
 			' '.join(names[1:])
 		])
+
+def buildMacroTable(dat: 'DAT', specTable: 'DAT'):
+	dat.clear()
+	if not specTable.numRows:
+		return
+	for cell in specTable.col(0):
+		if not cell.val:
+			continue
+		specs = cell.val.split('$')
+		for spec in specs:
+			if not spec:
+				continue
+			if ':' in spec:
+				name, value = spec.split(':', 1)
+			else:
+				name, value = spec, ''
+			dat.appendRow(['#define', name, value])
 
 def buildShaderExports(dat):
 	dat.clear()

@@ -38,25 +38,68 @@ def prepareTextureTable(dat):
 		for i in range(table.numRows)
 	])
 
+def prepareMacroTable(dat):
+	dat.clear()
+	table = dat.inputs[0]
+	if not table.numRows:
+		return
+	name = parent().par.Name
+	dat.appendRows([
+		[
+			table[i, 0].val.replace('@', name + '_'),
+			table[i, 1] if table.numCols > 1 else '',
+		]
+		for i in range(table.numRows)
+	])
+
 _lineCommentRx = re.compile('//.*\n')
 _spaceRx = re.compile('\\s+')
 
-class Definition:
-	def __init__(self, ownerComp: 'COMP'):
-		self.ownerComp = ownerComp
-		self.hostOp = ownerComp.par.Hostop.eval()  # type: COMP
+def prepareShaderCode(code: str):
+	if not code:
+		return ''
+	# strip line comments
+	code = _lineCommentRx.sub(' ', code)
+	# inject name
+	code = code.replace('@', parent().par.Name + '_')
+	# encode line ends
+	code = code.replace('\n', '\\n')
+	code = _spaceRx.sub(' ', code)
+	return code
 
-	@property
-	def _Name(self): return self.ownerComp.par.Name.eval()
+def buildDefinition(dat: 'DAT'):
+	dat.clear()
+	paramNameTable = op('param_global_names')
+	if paramNameTable.numCols > 0 and paramNameTable[0, 0] != '':
+		params = [c.val for c in paramNameTable.row(0)]
+	else:
+		params = []
+	materialAddition = op('materialAddition').text.strip()
+	buffers = op('buffers')
+	textures = op('textures')
+	macroTable = op('macros')
+	if macroTable.numRows > 0:
+		macros = '$'.join([
+			f'{name}:{val}' if val != '' else f'{name}'
+			for name, val in macroTable.rows()
+		])
+	else:
+		macros = ''
+	host = parent().par.Hostop.eval()
+	dat.appendCols([
+		['name', parent().par.Name],
+		['path', host.path if host else ''],
+		['opType', parent().par.Optype],
+		['inputName1', parent().par.Inputname1],
+		['inputName2', parent().par.Inputname2],
+		['params', ' '.join(params)],
+		['buffers', '$'.join([c.val for c in buffers.col(0)])],
+		# Don't directly reference the CHOP itself here to avoid a dependency
+		['paramSource', parent().path + '/param_vals'],
+		['function', op('function').text],
+		['materialAddition', materialAddition],
+		['materials', f'MAT_{parent().par.Name}' if materialAddition else ''],
+		['textures', '$'.join([c.val for c in textures.col(0)])],
+		['macros', macros],
+	])
 
-	def PrepareShaderCode(self, code: str):
-		if not code:
-			return ''
-		# strip line comments
-		code = _lineCommentRx.sub(' ', code)
-		# inject name
-		code = code.replace('@', self._Name + '_')
-		# encode line ends
-		code = code.replace('\n', '\\n')
-		code = _spaceRx.sub(' ', code)
-		return code
