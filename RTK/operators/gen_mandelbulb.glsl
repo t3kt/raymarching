@@ -3,5 +3,5 @@ Sdf thismap(vec3 p, Context ctx){
 		p,
 		vec3(@Translatex, @Translatey, @Translatez),
 		@Power,
-		vec2(@Thetashift, @Phishift));
+		radians(vec2(@Thetashift, @Phishift)));
 }
