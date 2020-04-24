@@ -33,7 +33,7 @@ def filterShaderCode(shaderCode, part):
 # destPath: dropped network
 
 def onDrop(dropName, xPos, yPos, index, totalDragged, dropExt, baseName, destPath):
-	print(parent().path, 'DROP ' + repr(locals()))
+	# print(parent().path, 'DROP ' + repr(locals()))
 	parentOp = op(baseName)
 	o = parentOp.op(dropName)
 	if o.isCOMP:
