@@ -7,6 +7,7 @@ uniform float gridOffset;
 uniform float FOV;
 uniform mat4 camMat;
 uniform int displayGrid;
+uniform vec2 enableReflectRefract = vec2(1);
 
 #ifndef LIGHT_COUNT
 #define LIGHT_COUNT 5
@@ -407,55 +408,60 @@ vec2 fragCoord = vUV.st*iResolution.xy;
         float occ = calcAO( pos, nor, fragCoord );
         float occ2 = calcAO2( pos, nor, fragCoord );
 
-        // =============reflections====================== 
-        Sdf resRef = res;
-        vec3 colRefl = vec3(0);
-        vec3 posRefl = pos;
-        vec3 norRefl = nor;
-        vec3 rdRefl = rd;
-        // vec3 roRefl
-        for (int k=0;k<Reflectionpasses;k++){
-            if (res.reflect){
-                    rdRefl = reflect( rdRefl, norRefl );
-                    vec3 roRefl = posRefl+norRefl*0.0001;
-                    // rdRefl = ref;
-                    resRef = castRay(roRefl, rdRefl, 50, 0.001);
-                    float tRefl = resRef.x;
-                    posRefl = roRefl + tRefl*rdRefl;
-            
-                    norRefl = calcNormal(posRefl);
-                    colRefl += getMat(resRef, posRefl, norRefl, colRefl, vec3(0),camPos, occ, occ2, tRefl, rdRefl).rgb;
-                }
-        }
+        // =============reflections======================
+              Sdf resRef = res;
+              vec3 colRefl = vec3(0);
+          if (enableReflectRefract.x > 0) {
+              vec3 posRefl = pos;
+              vec3 norRefl = nor;
+              vec3 rdRefl = rd;
+              // vec3 roRefl
+              for (int k=0;k<Reflectionpasses;k++){
+                  if (res.reflect){
+                      rdRefl = reflect(rdRefl, norRefl);
+                      vec3 roRefl = posRefl+norRefl*0.0001;
+                      // rdRefl = ref;
+                      resRef = castRay(roRefl, rdRefl, 50, 0.001);
+                      float tRefl = resRef.x;
+                      posRefl = roRefl + tRefl*rdRefl;
+
+                      norRefl = calcNormal(posRefl);
+                      colRefl += getMat(resRef, posRefl, norRefl, colRefl, vec3(0), camPos, occ, occ2, tRefl, rdRefl).rgb;
+                  }
+              }
+          }
         // ==============================================
 
         //================Refractions============================
         vec3 refrCol = vec3(0);
-        vec3 firstRd = rd;
-        vec3 firstNor = nor;
-        vec3 firstPos = pos;
-		Sdf resRefr = res;
-		float ior = 1;
-        for (int i= 0;i<Refractionpasses;i++){
-                if (resRefr.refract){
-                    ior = resRefr.ior;
-		            vec3 insideRd = refract(firstRd,firstNor, ior);
-		            float insideDist = castInside(firstPos+firstRd*0.1,insideRd);
-		            vec3 posRefrOut = firstPos+insideRd*insideDist*1.;
-		            vec3 norOut = calcNormal(posRefrOut);
-		            vec3 outSideRd = refract(insideRd, -1*norOut, 1/ior);
-		            resRefr = castRay(posRefrOut+firstRd*0.05,outSideRd,70, 0.01*2*i);
-		            float tRefr = resRefr.x;
-		            vec3 posFin = posRefrOut+outSideRd*tRefr;
-		            vec3 norRefr = calcNormal(posFin);
-		            float travelAtten = clamp(1-tRefr*0.05, 0, 1);
-		            refrCol += travelAtten*getMat(resRefr, posFin, norRefr, vec3(0), refrCol,camPos, occ, occ2, tRefr, outSideRd).rgb;
-		            firstPos = posFin;
-		            firstRd = outSideRd;
-		            firstNor = norRefr;
+          if (enableReflectRefract.y > 0) {
+              vec3 firstRd = rd;
+              vec3 firstNor = nor;
+              vec3 firstPos = pos;
+              Sdf resRefr = res;
+              float ior = 1;
+              for (int i= 0;i<Refractionpasses;i++){
+                  if (resRefr.refract){
+                      ior = resRefr.ior;
+                      vec3 insideRd = refract(firstRd, firstNor, ior);
+                      float insideDist = castInside(firstPos+firstRd*0.1, insideRd);
+                      vec3 posRefrOut = firstPos+insideRd*insideDist*1.;
+                      vec3 norOut = calcNormal(posRefrOut);
+                      vec3 outSideRd = refract(insideRd, -1*norOut, 1/ior);
+                      resRefr = castRay(posRefrOut+firstRd*0.05, outSideRd, 70, 0.01*2*i);
+                      float tRefr = resRefr.x;
+                      vec3 posFin = posRefrOut+outSideRd*tRefr;
+                      vec3 norRefr = calcNormal(posFin);
+                      float travelAtten = clamp(1-tRefr*0.05, 0, 1);
+                      refrCol += travelAtten*getMat(resRefr, posFin, norRefr, vec3(0), refrCol, camPos, occ, occ2, tRefr, outSideRd).rgb;
+                      firstPos = posFin;
+                      firstRd = outSideRd;
+                      firstNor = norRefr;
 
-		    }
-	    }
+                  }
+              }
+              refrCol = vec3(1, 0, 0);
+          }
         //=======================================================
 
 
