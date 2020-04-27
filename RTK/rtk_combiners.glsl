@@ -7,6 +7,54 @@ Sdf comb_diffColumns(vec3 p, Sdf res1, Sdf res2, float radius, float num){
 	return res1;
 }
 
+Sdf comb_unionColumns(vec3 p, Sdf res1, Sdf res2, float radius, float num){
+	float d = fOpUnionColumns(res1.x, res2.x, radius, num);
+	res1.x = d;
+	return res1;
+}
+
+Sdf comb_intersectColumns(vec3 p, Sdf res1, Sdf res2, float radius, float num){
+	float d = fOpIntersectionColumns(res1.x, res2.x, radius, num);
+	res1.x = d;
+	return res1;
+}
+
+Sdf comb_unionStairs(vec3 p, Sdf res1, Sdf res2, float radius, float num){
+	float d = fOpUnionStairs(res1.x, res2.x, radius, num);
+	res1.x = d;
+	return res1;
+}
+
+Sdf comb_intersectStairs(vec3 p, Sdf res1, Sdf res2, float radius, float num){
+	float d = fOpIntersectionStairs(res1.x, res2.x, radius, num);
+	res1.x = d;
+	return res1;
+}
+
+Sdf comb_diffStairs(vec3 p, Sdf res1, Sdf res2, float radius, float num){
+	float d = fOpDifferenceStairs(res1.x, res2.x, radius, num);
+	res1.x = d;
+	return res1;
+}
+
+Sdf comb_pipe(vec3 p, Sdf res1, Sdf res2, float radius){
+	float d = fOpPipe(res1.x, res2.x, radius);
+	res1.x = d;
+	return res1;
+}
+
+Sdf comb_unionRound(vec3 p, Sdf res1, Sdf res2, float radius){
+	float d = fOpUnionRound (res1.x, res2.x, radius);
+	res1.x = d;
+	return res1;
+}
+
+Sdf comb_intersectRound(vec3 p, Sdf res1, Sdf res2, float radius){
+	float d = fOpIntersectionRound (res1.x, res2.x, radius);
+	res1.x = d;
+	return res1;
+}
+
 Sdf comb_diffRound(vec3 p, Sdf res1, Sdf res2, float radius){
 	float d = fOpDifferenceRound (res1.x, res2.x, radius);
 	res1.x = d;
@@ -15,6 +63,36 @@ Sdf comb_diffRound(vec3 p, Sdf res1, Sdf res2, float radius){
 
 Sdf comb_intersectChamfer(vec3 p, Sdf res1, Sdf res2, float radius){
 	float d = fOpIntersectionChamfer(res1.x, res2.x, radius);
+	res1.x = d;
+	return res1;
+}
+
+Sdf comb_unionChamfer(vec3 p, Sdf res1, Sdf res2, float radius){
+	float d = fOpUnionChamfer(res1.x, res2.x, radius);
+	res1.x = d;
+	return res1;
+}
+
+Sdf comb_diffChamfer(vec3 p, Sdf res1, Sdf res2, float radius){
+	float d = fOpDifferenceChamfer(res1.x, res2.x, radius);
+	res1.x = d;
+	return res1;
+}
+
+Sdf comb_engrave(vec3 p, Sdf res1, Sdf res2, float radius){
+	float d = fOpEngrave(res1.x, res2.x, radius);
+	res1.x = d;
+	return res1;
+}
+
+Sdf comb_groove(vec3 p, Sdf res1, Sdf res2, float radius1, float radius2){
+	float d = fOpGroove(res1.x, res2.x, radius1, radius2);
+	res1.x = d;
+	return res1;
+}
+
+Sdf comb_tongue(vec3 p, Sdf res1, Sdf res2, float radius1, float radius2){
+	float d = fOpTongue(res1.x, res2.x, radius1, radius2);
 	res1.x = d;
 	return res1;
 }
