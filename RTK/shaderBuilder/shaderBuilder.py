@@ -74,7 +74,7 @@ def buildShaderExports(dat):
 	# a dependency causing extra cooks
 	_addArray(
 		dat, i, 'params',
-		parent().path + '/param_vals',
+		parent().path + '/merged_param_vals',
 		'float', 'uniformarray')
 	i += 1
 	_addArray(

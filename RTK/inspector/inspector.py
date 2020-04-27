@@ -36,7 +36,5 @@ def onDrop(dropName, xPos, yPos, index, totalDragged, dropExt, baseName, destPat
 	# print(parent().path, 'DROP ' + repr(locals()))
 	parentOp = op(baseName)
 	o = parentOp.op(dropName)
-	if o.isCOMP:
-		o = o.op('definition') or o.op('definition_out')
-	if o and o.isDAT:
-		parent().par.Definition = o
+	if o and o.isCOMP and (o.op('definition') or o.op('definition_out')):
+		parent().par.Hostop = o
