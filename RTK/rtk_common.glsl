@@ -109,6 +109,7 @@ vec2 poltocar(vec2 ra){
     return vec2(px,py);
 }
 
+float opSubtraction( float d1, float d2 ) { return max(-d1,d2); }
 
 float opSmoothUnion( float d1, float d2, float k ) {
     float h = clamp( 0.5 + 0.5*(d2-d1)/k, 0.0, 1.0 );
@@ -170,6 +171,91 @@ float fQuadFrameSmooth(vec3 p, vec2 size, float radius, float smoothing) {
 	return dist;
 }
 
+float fBoxFrameSmooth(vec3 p, vec3 size, float radius, float smoothing) {
+	// front top left-right
+	float dist = fCapsule(
+		p,
+		vec3(-0.5, 0.5, -0.5) * size,
+		vec3(0.5, 0.5, -0.5) * size,
+		radius);
+	// front bottom left-right
+	dist = fOpUnionSoft(dist, fCapsule(
+		p,
+		vec3(-0.5, -0.5, -0.5) * size,
+		vec3(0.5, -0.5, -0.5) * size,
+		radius
+	), smoothing);
+	// front top-bottom left
+	dist = fOpUnionSoft(dist, fCapsule(
+		p,
+		vec3(-0.5, 0.5, -0.5) * size,
+		vec3(-0.5, -0.5, -0.5) * size,
+		radius
+	), smoothing);
+	// front top-bottom right
+	dist = fOpUnionSoft(dist, fCapsule(
+		p,
+		vec3(0.5, 0.5, -0.5) * size,
+		vec3(0.5, -0.5, -0.5) * size,
+		radius
+	), smoothing);
+
+	// back top left-right
+	dist = fOpUnionSoft(dist, fCapsule(
+		p,
+		vec3(-0.5, 0.5, 0.5) * size,
+		vec3(0.5, 0.5, 0.5) * size,
+		radius), smoothing);
+	// back bottom left-right
+	dist = fOpUnionSoft(dist, fCapsule(
+		p,
+		vec3(-0.5, -0.5, 0.5) * size,
+		vec3(0.5, -0.5, 0.5) * size,
+		radius
+	), smoothing);
+	// back top-bottom left
+	dist = fOpUnionSoft(dist, fCapsule(
+		p,
+		vec3(-0.5, 0.5, 0.5) * size,
+		vec3(-0.5, -0.5, 0.5) * size,
+		radius
+	), smoothing);
+	// back top-bottom right
+	dist = fOpUnionSoft(dist, fCapsule(
+		p,
+		vec3(0.5, 0.5, 0.5) * size,
+		vec3(0.5, -0.5, 0.5) * size,
+		radius
+	), smoothing);
+
+	// front-back top left
+	dist = fOpUnionSoft(dist, fCapsule(
+		p,
+		vec3(-0.5, 0.5, 0.5) * size,
+		vec3(-0.5, 0.5, -0.5) * size,
+		radius
+	), smoothing);
+
+//	float d1 = fQuadFrameSmooth(
+//		p - vec3(0, 0, 0.5) * size,
+//		size.xy,
+//		radius, smoothing);
+//	float d2 = fQuadFrameSmooth(
+//		p + vec3(0, 0, 0.5) * size,
+//		size.xy,
+//		radius, smoothing);
+//	float dist = fOpUnionSoft(d1, d2, smoothing);
+
+//	float d2 = fCapsule(
+//		p + vec3(0.5, 0.5, 0)*size,
+//		vec3(0, 0, 0.5) * size,
+//		vec3(0, 0, -0.5) * size,
+//		radius
+//	);
+
+	return dist;
+}
+
 mat3 rotateMatrix(vec3 r) {
 	return TDRotateOnAxis(r.x, vec3(1, 0, 0)) *
 		TDRotateOnAxis(r.y, vec3(0, 1, 0)) *
@@ -178,7 +264,10 @@ mat3 rotateMatrix(vec3 r) {
 
 vec3 scaleRotateTranslate(vec3 pos, vec3 translate, vec3 rotate, vec3 scale, vec3 pivot) {
 	pos -= pivot;
-	pos *= rotateMatrix(rotate);
+//	pos *= rotateMatrix(rotate);
+	pos *= TDRotateOnAxis(rotate.x, vec3(1, 0, 0));
+	pos *= TDRotateOnAxis(rotate.y, vec3(0, 1, 0));
+	pos *= TDRotateOnAxis(rotate.z, vec3(0, 0, 1));
 	pos *= scale;
 	pos += translate;
 	pos += pivot;
