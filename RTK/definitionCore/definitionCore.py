@@ -61,7 +61,9 @@ def prepareShaderCode(code: str):
 	# strip line comments
 	code = _lineCommentRx.sub(' ', code)
 	# inject name
-	code = code.replace('@', parent().par.Name + '_')
+	name = str(parent().par.Name)
+	code = code.replace('@', name + '_')
+	code = code.replace('THIS', name)
 	# encode line ends
 	code = code.replace('\n', '\\n')
 	code = _spaceRx.sub(' ', code)
@@ -103,3 +105,10 @@ def buildDefinition(dat: 'DAT'):
 		['macros', macros],
 	])
 
+def inspect():
+	host = parent().par.Hostop.eval()
+	if not host:
+		return
+	inspector = op.rtk.op('inspector')
+	inspector.par.Hostop = host
+	inspector.par.Openwindow.pulse()
