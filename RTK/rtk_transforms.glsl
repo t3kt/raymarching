@@ -88,6 +88,39 @@ vec3 trans_moduloXYZ(vec3 p, float sizeX, float sizeY, float sizeZ) {
 	return p;
 }
 
+vec3 trans_mirrorOctantXY(vec3 p, float sizeX, float sizeY, float offsetX, float offsetY, float rotateAxis) {
+	mat3 r = TDRotateOnAxis(radians(rotateAxis), vec3(0, 0, 1));
+	p *= r;
+	vec2 offset = vec2(offsetX, offsetY);
+	vec2 temp = p.xy + offset;
+	pMirrorOctant(temp, vec2(sizeX, sizeY));
+	p.xy = temp - offset;
+	p *= -r;
+	return p;
+}
+
+vec3 trans_mirrorOctantXZ(vec3 p, float sizeX, float sizeZ, float offsetX, float offsetZ, float rotateAxis) {
+	mat3 r = TDRotateOnAxis(radians(rotateAxis), vec3(0, 1, 0));
+	p *= r;
+	vec2 offset = vec2(offsetX, offsetZ);
+	vec2 temp = p.xz + offset;
+	pMirrorOctant(temp, vec2(sizeX, sizeZ));
+	p.xz = temp - offset;
+	p *= -r;
+	return p;
+}
+
+vec3 trans_mirrorOctantYZ(vec3 p, float sizeY, float sizeZ, float offsetY, float offsetZ, float rotateAxis) {
+	mat3 r = TDRotateOnAxis(radians(rotateAxis), vec3(1, 0, 0));
+	p *= r;
+	vec2 offset = vec2(offsetY, offsetZ);
+	vec2 temp = p.yz + offset;
+	pMirrorOctant(temp, vec2(sizeY, sizeZ));
+	p.yz = temp - offset;
+	p *= -r;
+	return p;
+}
+
 vec3 trans_noise(vec3 p, float period, vec3 transform, vec3 scale){
 	p += TDPerlinNoise(vec3(p.x*period+transform.x, p.y*period+transform.y, p.z*period+transform.z))*scale;
 	return p;
