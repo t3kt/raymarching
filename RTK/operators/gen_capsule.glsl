@@ -2,8 +2,8 @@ Sdf thismap(vec3 p, Context ctx){
 	return gen_capsule(
 		p,
 		vec3(@Transformx, @Transformy, @Transformz),
-		vec3(@Offset1x, @Offset1y, @Offset1z),
-		vec3(@Offset2x, @Offset2y, @Offset2z),
+		vec3(@End1x, @End1y, @End1z),
+		vec3(@End2x, @End2y, @End2z),
 		@Radius
 	);
 }

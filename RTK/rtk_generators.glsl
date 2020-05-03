@@ -2,56 +2,56 @@
 #define RTK_GENERATORS
 
 Sdf gen_blob(vec3 p, vec3 transform) {
-	return createSdf(fBlob(p + transform));
+	return createSdf(fBlob(p - transform));
 }
 
 Sdf gen_box(vec3 p, vec3 transform, vec3 scale){
-	return createSdf(fBox(p + transform, scale));
+	return createSdf(fBox(p - transform, scale));
 }
 
 Sdf gen_cylinder(vec3 p, vec3 transform, float radius, float height){
-	return createSdf(fCylinder(p + transform, radius, height));
+	return createSdf(fCylinder(p - transform, radius, height));
 }
 
 Sdf gen_capsule(vec3 p, vec3 transform, vec3 offsetA, vec3 offsetB, float radius) {
-	return createSdf(fCapsule(p + transform, offsetA, offsetB, radius));
+	return createSdf(fCapsule(p - transform, offsetA, offsetB, radius));
 }
 
 Sdf gen_cone(vec3 p, vec3 transform, float radius, float height) {
-	return createSdf(fCone(p + transform, radius, height));
+	return createSdf(fCone(p - transform, radius, height));
 }
 
 #ifdef RTK_USE_GDF
 
 Sdf gen_fGDF(vec3 p, vec3 transform, float exponent, float radius, int begin, int end, bool useExponent) {
 	if (useExponent) {
-		return createSdf(fGDF(p + transform, radius, exponent, begin, end));
+		return createSdf(fGDF(p - transform, radius, exponent, begin, end));
 	} else {
-		return createSdf(fGDF(p + transform, radius, begin, end));
+		return createSdf(fGDF(p - transform, radius, begin, end));
 	}
 }
 
 #endif // RTK_USE_GDF
 
 Sdf gen_planeInfY(vec3 p, vec3 transform) {
-	return createSdf((p + transform).y);
+	return createSdf((p - transform).y);
 }
 Sdf gen_roundBox(vec3 p, vec3 transform, vec3 scale, float radius) {
-	vec3 d = abs(p + transform)-scale;
+	vec3 d = abs(p - transform)-scale;
 	return createSdf(length(max(d,0.))-radius);
 }
 Sdf gen_sphere(vec3 p, vec3 transform, float radius){
 	float matID = 2;
-	p += transform;
+	p -= transform;
 	return createSdf(length(p)-radius);
 }
 Sdf gen_torus(vec3 p, vec3 transform, vec2 rad){
-	p += transform;
+	p -= transform;
 	return createSdf(fTorus(p + transform, rad.x, rad.y-0.1));
 }
 
 Sdf gen_disc(vec3 p, vec3 translate, float radius) {
-	p += translate;
+	p -= translate;
 	return createSdf(fDisc(p, radius));
 }
 
@@ -59,7 +59,7 @@ Sdf gen_disc(vec3 p, vec3 translate, float radius) {
 
 Sdf gen_mandelbulb(vec3 p, vec3 translate, float power, vec2 shiftThetaPhi)
 {
-	p += translate;
+	p -= translate;
 
 
     if(length(p) > 1.5) return createSdf(length(p) - 1.2);
@@ -70,7 +70,10 @@ Sdf gen_mandelbulb(vec3 p, vec3 translate, float power, vec2 shiftThetaPhi)
         if (r>1.5) break;
         dr =  pow( r, power-1.0)*power*dr + 1.0;
         theta = acos(z.z/r) * power + shiftThetaPhi.x;
-        phi = atan(z.y,z.x) * power + shiftThetaPhi.y;
+        phi = atan(z.y,z.x) * power;// + shiftThetaPhi.y;
+	    if (i > 0) {
+		    phi += shiftThetaPhi.y;
+	    }
         float sinTheta = sin(theta);
         z = pow(r,power) * vec3(sinTheta*cos(phi), sinTheta*sin(phi), cos(theta)) + p;
     }
@@ -124,11 +127,11 @@ Sdf gen_mandelbulb(vec3 p, vec3 translate, float power, vec2 shiftThetaPhi)
 #endif // RTK_USE_MANDELBULB
 
 Sdf gen_quadFrameSmooth(vec3 p, vec3 transform, vec2 size, float radius, float smoothing) {
-	return createSdf(fQuadFrameSmooth(p + transform, size, radius, smoothing));
+	return createSdf(fQuadFrameSmooth(p - transform, size, radius, smoothing));
 }
 
 Sdf gen_boxFrameSmooth(vec3 p, vec3 transform, vec3 size, float radius, float smoothing) {
-	p += transform;
+	p -= transform;
 	// front quad frame
 	float dist = fQuadFrameSmooth(
 		p - vec3(0, 0, 0.5 * size.z),
@@ -140,25 +143,25 @@ Sdf gen_boxFrameSmooth(vec3 p, vec3 transform, vec3 size, float radius, float sm
 		size.xy,
 		radius, smoothing), smoothing);
 	// top left front-back
-	dist = fOpUnionSoft(dist, fCapsule(p,
-		size * vec3(-0.5, 0.5, -0.5),
-		size * vec3(-0.5, 0.5, 0.5),
-		radius), smoothing);
-	// top right front-back
-	dist = fOpUnionSoft(dist, fCapsule(p,
-		size * vec3(0.5, 0.5, -0.5),
-		size * vec3(0.5, 0.5, 0.5),
-		radius), smoothing);
+//	dist = fOpUnionSoft(dist, fCapsule(p,
+//		size * vec3(-0.5, 0.5, -0.5),
+//		size * vec3(-0.5, 0.5, 0.5),
+//		radius), smoothing);
+//	// top right front-back
+//	dist = fOpUnionSoft(dist, fCapsule(p,
+//		size * vec3(0.5, 0.5, -0.5),
+//		size * vec3(0.5, 0.5, 0.5),
+//		radius), smoothing);
 	// bottom left front-back
-	dist = fOpUnionSoft(dist, fCapsule(p,
-		size * vec3(-0.5, -0.5, -0.5),
-		size * vec3(-0.5, -0.5, 0.5),
-		radius), smoothing);
+//	dist = fOpUnionSoft(dist, fCapsule(p,
+//		size * vec3(-0.5, -0.5, -0.5),
+//		size * vec3(-0.5, -0.5, 0.5),
+//		radius), smoothing);
 	// bottom right front-back
-	dist = fOpUnionSoft(dist, fCapsule(p,
-		size * vec3(0.5, -0.5, -0.5),
-		size * vec3(0.5, -0.5, 0.5),
-		radius), smoothing);
+//	dist = fOpUnionSoft(dist, fCapsule(p,
+//		size * vec3(0.5, -0.5, -0.5),
+//		size * vec3(0.5, -0.5, 0.5),
+//		radius), smoothing);
 	return createSdf(dist);
 }
 

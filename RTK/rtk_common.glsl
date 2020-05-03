@@ -269,7 +269,7 @@ vec3 scaleRotateTranslate(vec3 pos, vec3 translate, vec3 rotate, vec3 scale, vec
 	pos *= TDRotateOnAxis(rotate.y, vec3(0, 1, 0));
 	pos *= TDRotateOnAxis(rotate.z, vec3(0, 0, 1));
 	pos *= scale;
-	pos += translate;
+	pos -= translate;
 	pos += pivot;
 	return pos;
 }
