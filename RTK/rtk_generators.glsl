@@ -41,7 +41,6 @@ Sdf gen_roundBox(vec3 p, vec3 transform, vec3 scale, float radius) {
 	return createSdf(length(max(d,0.))-radius);
 }
 Sdf gen_sphere(vec3 p, vec3 transform, float radius){
-	float matID = 2;
 	p -= transform;
 	return createSdf(length(p)-radius);
 }
