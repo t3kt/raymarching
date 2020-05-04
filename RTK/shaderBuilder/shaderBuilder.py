@@ -5,6 +5,21 @@ if False:
 	# noinspection PyUnresolvedReferences
 	from _stubs import *
 
+def buildParamTable(dat: 'DAT', definitions: 'DAT'):
+	dat.clear()
+	names = []
+	cells = definitions.col('paramTable')
+	if not cells:
+		return
+	for cell in cells[1:]:
+		if not cell.val:
+			continue
+		table = op(cell)
+		if not table or not table.numRows:
+			continue
+		names += [n for n in table.cells('*', '*') if n.val]
+	dat.appendCol(names)
+
 def buildBufferTable(dat: 'DAT', specTable: 'DAT'):
 	dat.clear()
 	dat.appendRow(['name', 'chop', 'type'])

@@ -71,11 +71,6 @@ def prepareShaderCode(code: str):
 
 def buildDefinition(dat: 'DAT'):
 	dat.clear()
-	paramNameTable = op('param_global_names')
-	if paramNameTable.numCols > 0 and paramNameTable[0, 0] != '':
-		params = [c.val for c in paramNameTable.row(0)]
-	else:
-		params = []
 	materialAddition = op('materialAddition').text.strip()
 	buffers = op('buffers')
 	textures = op('textures')
@@ -91,18 +86,20 @@ def buildDefinition(dat: 'DAT'):
 	dat.appendCols([
 		['name', parent().par.Name],
 		['path', host.path if host else ''],
+		['definitionPath', parent().path + '/definition' if host else ''],
 		['opType', parent().par.Optype],
 		['inputName1', parent().par.Inputname1],
 		['inputName2', parent().par.Inputname2],
-		['params', ' '.join(params)],
+		['paramTable', op('params').path if host else ''],
 		['buffers', '$'.join([c.val for c in buffers.col(0)])],
 		# Don't directly reference the CHOP itself here to avoid a dependency
-		['paramSource', parent().path + '/param_vals'],
+		['paramSource', parent().path + '/param_vals' if host else ''],
 		['function', op('function').text],
 		['materialAddition', materialAddition],
 		['materials', f'MAT_{parent().par.Name}' if materialAddition else ''],
 		['textures', '$'.join([c.val for c in textures.col(0)])],
 		['macros', macros],
+		['macrosPath', parent().path + '/macros' if host else ''],
 	])
 
 def inspect():
