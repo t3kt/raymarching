@@ -60,18 +60,27 @@ class Inspector:
 			return
 		self._HostOp = hostOp.path if hostOp else ''
 		self.statePar.Selectedop = ''
-		renderer = hostOp if hostOp and 'rtkRender' in hostOp.tags else self.ownerComp.op(
-			'render')
-		self.statePar.Renderer = renderer
 		if hostOp:
-			if renderer:
-				cam = renderer.par.Camera.eval()  # type: cameraCOMP
-				if cam:
-					self.arcBallCamera.LoadTransform(matrix=cam.transform())
+			self.AttachRenderer()
 			self.OpenWindow()
+		else:
+			self.DetachRenderer()
 
 	def Detatch(self):
 		self.AttachTo(None)
+
+	def AttachRenderer(self):
+		hostOp = self._HostOp
+		if hostOp and 'rtkRender' in hostOp.tags:
+			renderer = hostOp
+			if renderer:
+				self.statePar.Renderer = renderer
+				cam = renderer.par.Camera.eval()  # type: cameraCOMP
+				if cam:
+					self.arcBallCamera.LoadTransform(matrix=cam.transform())
+
+	def DetachRenderer(self):
+		self.statePar.Renderer = self.ownerComp.op('render')
 
 	def OpenWindow(self, *unused):
 		win = self.ownerComp.op('window')
