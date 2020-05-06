@@ -82,7 +82,7 @@ class Inspector:
 	def DetachRenderer(self):
 		self.statePar.Renderer = self.ownerComp.op('render')
 
-	def OpenWindow(self, *unused):
+	def OpenWindow(self, par=None):
 		win = self.ownerComp.op('window')
 		if not win.isOpen:
 			win.par.winopen.pulse()
@@ -98,4 +98,23 @@ class Inspector:
 	# 		return
 	# 	camera.setTransform(self.arcBallCamera.transform())
 
+	def ShowInEditor(self, par=None):
+		hostOp = self._HostOp
+		if not hostOp:
+			return
+		editor = _getActiveEditor()
+		if not editor:
+			editor = ui.panes.createFloating(type=PaneType.NETWORKEDITOR)
+		editor.owner = hostOp.parent()
+		editor.home(op=self.statePar.Selectedop.eval() or hostOp)
+
 	Openwindow = OpenWindow
+	Showineditor = ShowInEditor
+
+def _getActiveEditor():
+	pane = ui.panes.current
+	if pane.type == PaneType.NETWORKEDITOR:
+		return pane
+	for pane in ui.panes:
+		if pane.type == PaneType.NETWORKEDITOR:
+			return pane
