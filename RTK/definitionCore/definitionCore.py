@@ -1,9 +1,11 @@
 import re
+from typing import Union
 
 # noinspection PyUnreachableCode
 if False:
 	# noinspection PyUnresolvedReferences
 	from _stubs import *
+	from RTK.inspector.inspector import Inspector
 
 def buildName():
 	d = parent()
@@ -106,6 +108,5 @@ def inspect():
 	host = parent().par.Hostop.eval()
 	if not host:
 		return
-	inspector = op.rtk.op('inspector')
-	inspector.par.Hostop = host
-	inspector.par.Openwindow.pulse()
+	inspector = op.rtk.op('inspector')  # type: Union[COMP, Inspector]
+	inspector.AttachTo(host)

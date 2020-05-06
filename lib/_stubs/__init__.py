@@ -961,6 +961,20 @@ evaluateDAT = mergeDAT = nullDAT = parameterexecuteDAT = parameterDAT = tableDAT
 parameterCHOP = nullCHOP = selectCHOP = CHOP
 animationCOMP = COMP
 
+class objectCOMP(COMP):
+	localTransform: _Matrix
+	worldTransform: _Matrix
+	def transform(self) -> _Matrix: pass
+	def setTransform(self, matrix: _Matrix): pass
+	def preTransform(self) -> _Matrix: pass
+	def setPreTransform(self, matrix: _Matrix): pass
+	def relativeTransform(self, target: COMP) -> _Matrix: pass
+	def importABC(self, filepath, lights=True, cameras=True, mergeGeometry=True, gpuDeform=True, rate=None, textureFolder=None, geometryFolder=None, animationFolder=None): pass
+	def importFBX(self, filepath, lights=True, cameras=True, mergeGeometry=True, gpuDeform=True, rate=None, textureFolder=None, geometryFolder=None, animationFolder=None): pass
+
+class cameraCOMP(objectCOMP):
+	def projectionInverse(self, x, y) -> _Matrix: pass
+	def projection(self, x, y) -> _Matrix: pass
 
 class scriptCHOP(CHOP):
 	def destroyCustomPars(self): pass

@@ -1,9 +1,12 @@
 import re
+from typing import Optional, Union
 
 # noinspection PyUnreachableCode
 if False:
 	# noinspection PyUnresolvedReferences
 	from _stubs import *
+	from _stubs.ArcBallExt import ArcBallExt
+	ext.Inspector = Inspector()
 
 def extractShaderPartNames(shaderCode):
 	if not shaderCode:
@@ -36,5 +39,54 @@ def onDrop(dropName, xPos, yPos, index, totalDragged, dropExt, baseName, destPat
 	# print(parent().path, 'DROP ' + repr(locals()))
 	parentOp = op(baseName)
 	o = parentOp.op(dropName)
-	if o and o.isCOMP and (o.op('definition') or o.op('definition_out')):
-		parent().par.Hostop = o
+	ext.Inspector.AttachTo(o)
+
+class Inspector:
+	def __init__(self, ownerComp):
+		self.ownerComp = ownerComp
+		self.statePar = ownerComp.op('iparState').par
+		self.arcBallCamera = ownerComp.op('cam')  # type: Union[cameraCOMP, ArcBallExt]
+
+	@property
+	def _HostOp(self) -> 'Optional[COMP]':
+		return self.ownerComp.par.Hostop.eval()
+
+	@_HostOp.setter
+	def _HostOp(self, hostOp: 'Optional[COMP]'):
+		self.ownerComp.par.Hostop = hostOp or ''
+
+	def AttachTo(self, hostOp: 'Optional[COMP]'):
+		if hostOp and (not hostOp.isCOMP or not (hostOp.op('definition') or hostOp.op('definition_out'))):
+			return
+		self._HostOp = hostOp.path if hostOp else ''
+		self.statePar.Selectedop = ''
+		renderer = hostOp if hostOp and 'rtkRender' in hostOp.tags else self.ownerComp.op(
+			'render')
+		self.statePar.Renderer = renderer
+		if hostOp:
+			if renderer:
+				cam = renderer.par.Camera.eval()  # type: cameraCOMP
+				if cam:
+					self.arcBallCamera.LoadTransform(matrix=cam.transform())
+			self.OpenWindow()
+
+	def Detatch(self):
+		self.AttachTo(None)
+
+	def OpenWindow(self, *unused):
+		win = self.ownerComp.op('window')
+		if not win.isOpen:
+			win.par.winopen.pulse()
+
+	# def OnCamMatrixChange(self, dat: 'DAT'):
+	# 	if dat.numRows != 4 or dat.numCols != 4:
+	# 		return
+	# 	renderer = self.statePar.Renderer.eval()
+	# 	if not renderer:
+	# 		return
+	# 	camera = renderer.par.Camera.eval()  # type: cameraCOMP
+	# 	if not camera:
+	# 		return
+	# 	camera.setTransform(self.arcBallCamera.transform())
+
+	Openwindow = OpenWindow
