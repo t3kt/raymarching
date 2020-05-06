@@ -1,5 +1,6 @@
 import re
-from typing import Optional, Union
+from typing import Dict, List, Optional, Union
+from dataclasses import dataclass, field
 
 # noinspection PyUnreachableCode
 if False:
@@ -108,6 +109,56 @@ class Inspector:
 		editor.owner = hostOp.parent()
 		editor.home(op=self.statePar.Selectedop.eval() or hostOp)
 
+	@staticmethod
+	def DefinitionOpColumnNames():
+		return ['globalName', 'enabled']
+
+	@staticmethod
+	def DefinitionOpValues(o: 'COMP', dat: 'DAT', row: int):
+		inDat = dat.inputs[0]
+		return [
+			inDat[row, 'name'] if row < inDat.numRows else '',
+			int(o.par.Enable) if hasattr(o.par, 'Enable') else '',
+		]
+
+	def _BuildNodeTree(self):
+		definitions = self.ownerComp.op('definitions')
+		if definitions.numRows < 2:
+			return None
+		nodesByName = {}  # type: Dict[str, _Node]
+		for row in range(1, definitions.numRows):
+			name = definitions[row, 'name'].val
+			node = _Node(name)
+			for col in ['inputName1', 'inputName2']:
+				inputName = definitions[row, col].val
+				if inputName:
+					node.inputNames.append(inputName)
+			nodesByName[name] = node
+		for node in nodesByName.values():
+			node.inputs = [
+				nodesByName[inputName]
+				for inputName in node.inputNames
+			]
+		root = nodesByName[definitions[1, 'name'].val]
+		root.assignDepth(0)
+		return root
+
+	def BuildNodeTreeTable(self, dat: 'DAT'):
+		dat.clear()
+		root = self._BuildNodeTree()
+		if not root:
+			return
+		coveredNames = set()
+
+		def _addNode(node: _Node):
+			dat.appendRow(([''] * node.depth) + [node.name])
+			if node.name not in coveredNames:
+				coveredNames.add(node.name)
+				for inputNode in node.inputs:
+					_addNode(inputNode)
+
+		_addNode(root)
+
 	Openwindow = OpenWindow
 	Showineditor = ShowInEditor
 
@@ -118,3 +169,17 @@ def _getActiveEditor():
 	for pane in ui.panes:
 		if pane.type == PaneType.NETWORKEDITOR:
 			return pane
+
+@dataclass
+class _Node:
+	name: str
+	inputNames: List[str] = field(default_factory=list)
+	inputs: List['_Node'] = field(default_factory=list)
+	depth: Optional[int] = None
+
+	def assignDepth(self, depth: int):
+		self.depth = depth
+		for inputNode in self.inputs:
+			if inputNode.depth is None:
+				inputNode.assignDepth(depth + 1)
+
