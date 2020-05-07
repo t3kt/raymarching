@@ -121,7 +121,7 @@ class Inspector:
 			int(o.par.Enable) if hasattr(o.par, 'Enable') else '',
 		]
 
-	def _BuildNodeTree(self):
+	def _BuildNodeTree(self) -> 'Optional[_NodeTree]':
 		definitions = self.ownerComp.op('definitions')
 		if definitions.numRows < 2:
 			return None
@@ -141,12 +141,12 @@ class Inspector:
 			]
 		root = nodesByName[definitions[1, 'name'].val]
 		root.assignDepth(0)
-		return root
+		return _NodeTree(root=root, nodesByName=nodesByName)
 
-	def BuildNodeTreeTable(self, dat: 'DAT'):
+	def BuildNodeTreeIndentedTable(self, dat: 'DAT'):
 		dat.clear()
-		root = self._BuildNodeTree()
-		if not root:
+		tree = self._BuildNodeTree()
+		if not tree:
 			return
 		coveredNames = set()
 
@@ -157,7 +157,57 @@ class Inspector:
 				for inputNode in node.inputs:
 					_addNode(inputNode)
 
-		_addNode(root)
+		_addNode(tree.root)
+
+	def BuildNodeTreeTable(self, dat: 'DAT'):
+		dat.clear()
+		dat.appendRow(['name', 'col', 'row', 'inputs'])
+		tree = self._BuildNodeTree()
+		if not tree:
+			return
+		nodesByDepth = {}  # type: Dict[int, List[_Node]]
+		for node in tree.nodesByName.values():
+			if node.depth not in nodesByDepth:
+				nodesByDepth[node.depth] = []
+			col = len(nodesByDepth[node.depth])
+			nodesByDepth[node.depth].append(node)
+			dat.appendRow([
+				node.name,
+				col,
+				node.depth,
+				' '.join(node.inputNames),
+			])
+
+	@staticmethod
+	def BuildNodeConnectorsTable(dat: 'DAT', nodeTable: 'DAT'):
+		dat.clear()
+		dat.appendRow(['fromNode', 'toNode', 'fromCol', 'fromRow', 'toCol', 'toRow'])
+		if nodeTable.numRows < 2:
+			return
+		for nodeName in nodeTable.col('name')[1:]:
+			inputNames = nodeTable[nodeName, 'inputs'].val
+			if not inputNames:
+				continue
+			dat.appendRows([
+				[
+					inputName, nodeName,
+					nodeTable[inputName, 'col'], nodeTable[inputName, 'row'],
+					nodeTable[nodeName, 'col'], nodeTable[nodeName, 'row'],
+				]
+				for inputName in inputNames.split(' ')
+			])
+
+	@staticmethod
+	def BuildConnectorGeos(sop: 'scriptSOP', connectorTable: 'DAT'):
+		sop.clear()
+		if connectorTable.numRows < 2:
+			return
+		for i in range(1, connectorTable.numRows):
+			line = sop.appendPoly(2, closed=False, addPoints=True)
+			line[0].point.x = float(connectorTable[i, 'fromCol'])
+			line[0].point.y = float(connectorTable[i, 'fromRow']) - 0.25
+			line[1].point.x = float(connectorTable[i, 'toCol'])
+			line[1].point.y = float(connectorTable[i, 'toRow']) + 0.25
 
 	Openwindow = OpenWindow
 	Showineditor = ShowInEditor
@@ -183,3 +233,7 @@ class _Node:
 			if inputNode.depth is None:
 				inputNode.assignDepth(depth + 1)
 
+@dataclass
+class _NodeTree:
+	root: _Node
+	nodesByName: Dict[str, _Node] = field(default_factory=dict)
