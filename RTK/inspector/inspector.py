@@ -143,22 +143,6 @@ class Inspector:
 		root.assignDepth(0)
 		return _NodeTree(root=root, nodesByName=nodesByName)
 
-	def BuildNodeTreeIndentedTable(self, dat: 'DAT'):
-		dat.clear()
-		tree = self._BuildNodeTree()
-		if not tree:
-			return
-		coveredNames = set()
-
-		def _addNode(node: _Node):
-			dat.appendRow(([''] * node.depth) + [node.name])
-			if node.name not in coveredNames:
-				coveredNames.add(node.name)
-				for inputNode in node.inputs:
-					_addNode(inputNode)
-
-		_addNode(tree.root)
-
 	def BuildNodeTreeTable(self, dat: 'DAT'):
 		dat.clear()
 		dat.appendRow(['name', 'col', 'row', 'inputs'])
@@ -203,11 +187,23 @@ class Inspector:
 		if connectorTable.numRows < 2:
 			return
 		for i in range(1, connectorTable.numRows):
-			line = sop.appendPoly(2, closed=False, addPoints=True)
-			line[0].point.x = float(connectorTable[i, 'fromCol'])
-			line[0].point.y = float(connectorTable[i, 'fromRow']) - 0.25
-			line[1].point.x = float(connectorTable[i, 'toCol'])
-			line[1].point.y = float(connectorTable[i, 'toRow']) + 0.25
+			x1 = float(connectorTable[i, 'fromCol'])
+			x2 = float(connectorTable[i, 'toCol'])
+			y1 = float(connectorTable[i, 'fromRow']) - 0.25
+			y2 = float(connectorTable[i, 'toRow']) + 0.25
+			if x1 == x2:
+				line = sop.appendPoly(2, closed=False, addPoints=True)
+				line[0].point.x = x1
+				line[0].point.y = y1
+				line[1].point.x = x2
+				line[1].point.y = y2
+			else:
+				line = sop.appendBezier(4, closed=False, order=4, addPoints=True)
+				line[0].point.x = line[1].point.x = x1
+				line[2].point.x = line[3].point.x = x2
+				line[0].point.y = y1
+				line[1].point.y = line[2].point.y = (y2 + y1) / 2.0
+				line[3].point.y = y2
 
 	Openwindow = OpenWindow
 	Showineditor = ShowInEditor
