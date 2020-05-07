@@ -205,6 +205,17 @@ class Inspector:
 				line[1].point.y = line[2].point.y = (y2 + y1) / 2.0
 				line[3].point.y = y2
 
+	def OnNodeTreePick(self, renderPickChop: 'CHOP'):
+		chan = renderPickChop['nodeIndex']
+		if chan is None:
+			return
+		index = int(chan)
+		definitions = self.ownerComp.op('definitions')
+		if index < (definitions.numRows - 1):
+			path = definitions[index + 1, 'path']
+			if path:
+				self.statePar.Selectedop = path
+
 	Openwindow = OpenWindow
 	Showineditor = ShowInEditor
 
