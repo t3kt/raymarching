@@ -14,6 +14,9 @@ struct Sdf
 	float material2; // in case of interpolating, the second material
 	float interpolant; // in case of interpolating, the interpolation value
 	float ior; // index of refraction in case of refraction
+#ifdef RTK_USE_NORMAL_MAP
+	vec4 norm; // surface normal x, y, z, and a toggle for whether to use this normal
+#endif
 };
 
 Sdf createSdf(float dist) {
@@ -25,6 +28,9 @@ Sdf createSdf(float dist) {
 	res.refract = false;
 	res.material2 = 0.;
 	res.interpolant = 0.;
+#ifdef RTK_USE_NORMAL_MAP
+	res.norm = vec4(0);
+#endif
 	return res;
 }
 
