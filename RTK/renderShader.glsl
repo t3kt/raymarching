@@ -248,35 +248,9 @@ vec4 getMat2(float m, vec3 pos, vec3 n, vec3 ref, vec3 refraction, vec3 eye, flo
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // ===========Additional Material is inserted here===================
 // #include <materialParagraph>
-// 
-// 
-// 
-// 
-// 
-// 
-// 
 // ==================================================================
-
-
-
-
-
     return col;
 }
 vec4 getMat(Sdf res, vec3 pos, vec3 n, vec3 ref, vec3 refraction, vec3 eye, float occ, float occ2, float t, vec3 rd){
@@ -341,17 +315,12 @@ float castInside(vec3 ro, vec3 rd){
         }
 
     }
-
     return res;
 }
 
-
 void main()
 {
-
-
-
-vec2 fragCoord = vUV.st*iResolution.xy;
+    vec2 fragCoord = vUV.st*iResolution.xy;
     vec2 p = (-iResolution.xy+2.0*fragCoord.xy)/iResolution.y;
 
     vec2 q = vUV.st;
