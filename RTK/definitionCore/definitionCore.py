@@ -29,12 +29,18 @@ def buildParamTable(dat: 'DAT'):
 		return
 	name = parent().par.Name.eval()
 	paramNames = parent().par.Params.eval().strip().split(' ')
-	pars = host.pars(*[pn.strip() for pn in paramNames])
+	allParamNames = [
+			p.name
+			for p in host.pars(*[pn.strip() for pn in paramNames])
+			if p.isCustom and not (p.isPulse and p.name == 'Inspect')
+		]
+	specialNames = tdu.expand(parent().par.Specialparams.eval())
+	if specialNames:
+		allParamNames += specialNames
 	dat.appendCol(
 		[
-			name + '_' + p.name
-			for p in pars
-			if p.isCustom and not (p.isPulse and p.name == 'Inspect')
+			name + '_' + pn
+			for pn in allParamNames
 		])
 
 def prepareBufferTable(dat):
