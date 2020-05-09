@@ -1,4 +1,5 @@
 Sdf thismap(vec3 p, Context ctx) {
-	vec3 q = trans_elongate(p, vec3(@Lengthx, @Lengthy,@Lengthz));
+	vec3 h = vec3(THIS_Lengthx, THIS_Lengthy,THIS_Lengthz);
+	vec3 q = p - clamp(p, -h, h);
 	return inputOp1(q, ctx);
 }

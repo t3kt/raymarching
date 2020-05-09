@@ -1,4 +1,3 @@
 Sdf thismap(vec3 p, Context ctx) {
-	p = trans_translate(p, vec3(@Transformx, @Transformy, @Transformz));
-	return inputOp1(p, ctx);
+	return inputOp1(p- vec3(THIS_Transformx, THIS_Transformy, THIS_Transformz), ctx);
 }

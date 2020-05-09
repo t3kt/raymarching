@@ -1,5 +1,5 @@
 Sdf thismap(vec3 p, Context ctx) {
-	int n = int(@Instancecount);
+	int n = int(THIS_Instancecount);
 	vec3 t = texelFetch(thismap_instances, ctx.iteration).rgb;
 	vec3 r = texelFetch(thismap_instances, ctx.iteration + n).rgb;
 	vec3 s = texelFetch(thismap_instances, ctx.iteration + n * 2).rgb;
