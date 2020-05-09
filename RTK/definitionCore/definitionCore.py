@@ -22,6 +22,21 @@ def buildName():
 		name = 'o_' + name
 	return name
 
+def buildParamTable(dat: 'DAT'):
+	dat.clear()
+	host = parent().par.Hostop.eval()
+	if not host:
+		return
+	name = parent().par.Name.eval()
+	paramNames = parent().par.Params.eval().strip().split(' ')
+	pars = host.pars(*[pn.strip() for pn in paramNames])
+	dat.appendCol(
+		[
+			name + '_' + p.name
+			for p in pars
+			if p.isCustom and not (p.isPulse and p.name == 'Inspect')
+		])
+
 def prepareBufferTable(dat):
 	dat.clear()
 	table = dat.inputs[0]
@@ -84,6 +99,7 @@ def buildDefinition(dat: 'DAT'):
 		])
 	else:
 		macros = ''
+	paramTable = op('params')
 	host = parent().par.Hostop.eval()
 	dat.appendCols([
 		['name', parent().par.Name],
@@ -92,7 +108,7 @@ def buildDefinition(dat: 'DAT'):
 		['opType', parent().par.Optype],
 		['inputName1', parent().par.Inputname1],
 		['inputName2', parent().par.Inputname2],
-		['paramTable', op('params').path if host else ''],
+		['paramTable', paramTable.path if host and paramTable.numRows > 0 and paramTable.numCols > 0 else ''],
 		['buffers', '$'.join([c.val for c in buffers.col(0)])],
 		# Don't directly reference the CHOP itself here to avoid a dependency
 		['paramSource', parent().path + '/param_vals' if host else ''],
