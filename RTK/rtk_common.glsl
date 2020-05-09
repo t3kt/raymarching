@@ -30,11 +30,13 @@ Sdf createSdf(float dist) {
 
 struct Context {
 	int iteration;
+	int total;
 };
 
 Context defaultContext() {
 	Context ctx;
 	ctx.iteration = 0;
+	ctx.total = 1;
 	return ctx;
 }
 
