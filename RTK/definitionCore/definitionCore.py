@@ -55,20 +55,6 @@ def prepareTextureTable(dat):
 		for i in range(table.numRows)
 	])
 
-def prepareMacroTable(dat):
-	dat.clear()
-	table = dat.inputs[0]
-	if not table.numRows:
-		return
-	name = parent().par.Name
-	dat.appendRows([
-		[
-			table[i, 0].val.replace('@', name + '_'),
-			table[i, 1] if table.numCols > 1 else '',
-		]
-		for i in range(table.numRows)
-	])
-
 _lineCommentRx = re.compile('//.*\n')
 _spaceRx = re.compile('\\s+')
 
@@ -92,13 +78,6 @@ def buildDefinition(dat: 'DAT'):
 	buffers = op('buffers')
 	textures = op('textures')
 	macroTable = op('macros')
-	if macroTable.numRows > 0:
-		macros = '$'.join([
-			f'{name}:{val}' if val != '' else f'{name}'
-			for name, val in macroTable.rows()
-		])
-	else:
-		macros = ''
 	paramTable = op('params')
 	host = parent().par.Hostop.eval()
 	dat.appendCols([
@@ -116,8 +95,7 @@ def buildDefinition(dat: 'DAT'):
 		['materialAddition', materialAddition],
 		['materials', f'MAT_{parent().par.Name}' if materialAddition else ''],
 		['textures', '$'.join([c.val for c in textures.col(0)])],
-		['macros', macros],
-		['macrosPath', parent().path + '/macros' if host else ''],
+		['macroTable', parent().path + '/macros' if host and macroTable.numRows > 0 and macroTable.numCols > 0 else ''],
 	])
 
 def inspect():
