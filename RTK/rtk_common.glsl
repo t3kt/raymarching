@@ -147,6 +147,8 @@ Sdf opUnionSoft(Sdf d1, Sdf d2, float k) {
   return res;//vec2(resx, resy); }
 }
 
+#ifdef RTK_USE_QUAD_FRAME_SMOOTH
+
 float fQuadFrameSmooth(vec3 p, vec2 size, float radius, float smoothing) {
 	// top left-right
 	float dist = fCapsule(p,
@@ -170,6 +172,10 @@ float fQuadFrameSmooth(vec3 p, vec2 size, float radius, float smoothing) {
 		radius), smoothing);
 	return dist;
 }
+
+#endif // RTK_USE_QUAD_FRAME_SMOOTH
+
+#ifdef RTK_USE_BOX_FRAME_SMOOTH
 
 float fBoxFrameSmooth(vec3 p, vec3 size, float radius, float smoothing) {
 	// front top left-right
@@ -255,6 +261,8 @@ float fBoxFrameSmooth(vec3 p, vec3 size, float radius, float smoothing) {
 
 	return dist;
 }
+
+#endif // RTK_USE_BOX_FRAME_SMOOTH
 
 mat3 rotateMatrix(vec3 r) {
 	return TDRotateOnAxis(r.x, vec3(1, 0, 0)) *

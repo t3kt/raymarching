@@ -71,6 +71,7 @@ Sdf gen_mandelbulb(vec3 p, vec3 translate, float power, vec2 shiftThetaPhi)
 }
 
 #endif // RTK_USE_MANDELBULB
+#ifdef RTK_USE_BOX_FRAME_SMOOTH
 
 Sdf gen_boxFrameSmooth(vec3 p, vec3 transform, vec3 size, float radius, float smoothing) {
 	p -= transform;
@@ -106,5 +107,7 @@ Sdf gen_boxFrameSmooth(vec3 p, vec3 transform, vec3 size, float radius, float sm
 //		radius), smoothing);
 	return createSdf(dist);
 }
+
+#endif // RTK_USE_BOX_FRAME_SMOOTH
 
 #endif // RTK_GENERATORS
