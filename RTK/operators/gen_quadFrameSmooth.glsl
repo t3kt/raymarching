@@ -1,8 +1,6 @@
-Sdf thismap(vec3 p, Context ctx){
-	return gen_quadFrameSmooth(
-		p,
-		vec3(@Transformx, @Transformy, @Transformz),
-		vec2(@Scalex, @Scaley),
-		@Radius, @Smoothing
-	);
+Sdf thismap(vec3 p, Context ctx) {
+	return createSdf(fQuadFrameSmooth(
+		p - vec3(THIS_Transformx, THIS_Transformy, THIS_Transformz),
+		vec2(THIS_Scalex, THIS_Scaley),
+		THIS_Radius, THIS_Smoothing));
 }

@@ -1,8 +1,8 @@
 Sdf thismap(vec3 p, Context ctx){
 	return gen_boxFrameSmooth(
 		p,
-		vec3(@Transformx, @Transformy, @Transformz),
-		vec3(@Scalex, @Scaley, @Scalez),
-		@Radius, @Smoothing
+		vec3(THIS_Transformx, THIS_Transformy, THIS_Transformz),
+		vec3(THIS_Scalex, THIS_Scaley, THIS_Scalez),
+		THIS_Radius, THIS_Smoothing
 	);
 }

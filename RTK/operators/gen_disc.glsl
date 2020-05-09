@@ -1,7 +1,3 @@
-Sdf thismap(vec3 p, Context ctx){
-	return gen_disc(
-		p,
-		vec3(@Translatex, @Translatey, @Translatez),
-		@Radius
-	);
+Sdf thismap(vec3 p, Context ctx) {
+	return createSdf(fDisc(p - vec3(THIS_Translatex, THIS_Translatey, THIS_Translatez), THIS_Radius));
 }

@@ -1,6 +1,3 @@
-Sdf thismap(vec3 p, Context ctx){
-	return gen_blob(
-		p,
-		vec3(@Transformx, @Transformy, @Transformz)
-	);
+Sdf thismap(vec3 p, Context ctx) {
+	return createSdf(fBlob(p - vec3(THIS_Transformx, THIS_Transformy, THIS_Transformz)));
 }

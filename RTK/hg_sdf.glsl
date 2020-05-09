@@ -398,45 +398,45 @@ float fGDF(vec3 p, float r, int begin, int end) {
 
 // Primitives follow:
 
-float fOctahedron(vec3 p, float r, float e) {
-	return fGDF(p, r, e, 3, 6);
-}
-
-float fDodecahedron(vec3 p, float r, float e) {
-	return fGDF(p, r, e, 13, 18);
-}
-
-float fIcosahedron(vec3 p, float r, float e) {
-	return fGDF(p, r, e, 3, 12);
-}
-
-float fTruncatedOctahedron(vec3 p, float r, float e) {
-	return fGDF(p, r, e, 0, 6);
-}
-
-float fTruncatedIcosahedron(vec3 p, float r, float e) {
-	return fGDF(p, r, e, 3, 18);
-}
-
-float fOctahedron(vec3 p, float r) {
-	return fGDF(p, r, 3, 6);
-}
-
-float fDodecahedron(vec3 p, float r) {
-	return fGDF(p, r, 13, 18);
-}
-
-float fIcosahedron(vec3 p, float r) {
-	return fGDF(p, r, 3, 12);
-}
-
-float fTruncatedOctahedron(vec3 p, float r) {
-	return fGDF(p, r, 0, 6);
-}
-
-float fTruncatedIcosahedron(vec3 p, float r) {
-	return fGDF(p, r, 3, 18);
-}
+//float fOctahedron(vec3 p, float r, float e) {
+//	return fGDF(p, r, e, 3, 6);
+//}
+//
+//float fDodecahedron(vec3 p, float r, float e) {
+//	return fGDF(p, r, e, 13, 18);
+//}
+//
+//float fIcosahedron(vec3 p, float r, float e) {
+//	return fGDF(p, r, e, 3, 12);
+//}
+//
+//float fTruncatedOctahedron(vec3 p, float r, float e) {
+//	return fGDF(p, r, e, 0, 6);
+//}
+//
+//float fTruncatedIcosahedron(vec3 p, float r, float e) {
+//	return fGDF(p, r, e, 3, 18);
+//}
+//
+//float fOctahedron(vec3 p, float r) {
+//	return fGDF(p, r, 3, 6);
+//}
+//
+//float fDodecahedron(vec3 p, float r) {
+//	return fGDF(p, r, 13, 18);
+//}
+//
+//float fIcosahedron(vec3 p, float r) {
+//	return fGDF(p, r, 3, 12);
+//}
+//
+//float fTruncatedOctahedron(vec3 p, float r) {
+//	return fGDF(p, r, 0, 6);
+//}
+//
+//float fTruncatedIcosahedron(vec3 p, float r) {
+//	return fGDF(p, r, 3, 18);
+//}
 
 #endif // RTK_USE_GDF
 

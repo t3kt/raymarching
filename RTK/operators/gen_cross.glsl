@@ -1,6 +1,6 @@
-Sdf thismap(vec3 p, Context ctx){
+Sdf thismap(vec3 p, Context ctx) {
 	return createSdf(sdCross(
-		p + vec3(@Translatex, @Translatey, @Translatez),
-		vec3(@Sizex, @Sizey, @Sizez)
+		p + vec3(THIS_Translatex, THIS_Translatey, THIS_Translatez),
+		vec3(THIS_Sizex, THIS_Sizey, THIS_Sizez)
 	));
 }

@@ -1,8 +1,4 @@
-Sdf thismap(vec3 p, Context ctx){
-	return gen_roundBox(
-		p,
-		vec3(@Transformx, @Transformy, @Transformz),
-		vec3(@Scalex, @Scaley, @Scalez),
-		@Radius
-	);
+Sdf thismap(vec3 p, Context ctx) {
+	vec3 d = abs(p - vec3(THIS_Transformx, THIS_Transformy, THIS_Transformz))-vec3(THIS_Scalex, THIS_Scaley, THIS_Scalez);
+	return createSdf(length(max(d,0.))-THIS_Radius);
 }

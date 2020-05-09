@@ -1,7 +1,5 @@
-Sdf thismap(vec3 p, Context ctx){
-	return gen_cone(
-		p,
-		vec3(@Transformx, @Transformy, @Transformz),
-		@Radius, @Height
-	);
+Sdf thismap(vec3 p, Context ctx) {
+	return createSdf(fCone(
+		p - vec3(THIS_Transformx, THIS_Transformy, THIS_Transformz),
+		THIS_Radius, THIS_Height));
 }

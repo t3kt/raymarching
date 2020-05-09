@@ -1,59 +1,6 @@
 #ifndef RTK_GENERATORS
 #define RTK_GENERATORS
 
-Sdf gen_blob(vec3 p, vec3 transform) {
-	return createSdf(fBlob(p - transform));
-}
-
-Sdf gen_box(vec3 p, vec3 transform, vec3 scale){
-	return createSdf(fBox(p - transform, scale));
-}
-
-Sdf gen_cylinder(vec3 p, vec3 transform, float radius, float height){
-	return createSdf(fCylinder(p - transform, radius, height));
-}
-
-Sdf gen_capsule(vec3 p, vec3 transform, vec3 offsetA, vec3 offsetB, float radius) {
-	return createSdf(fCapsule(p - transform, offsetA, offsetB, radius));
-}
-
-Sdf gen_cone(vec3 p, vec3 transform, float radius, float height) {
-	return createSdf(fCone(p - transform, radius, height));
-}
-
-#ifdef RTK_USE_GDF
-
-Sdf gen_fGDF(vec3 p, vec3 transform, float exponent, float radius, int begin, int end, bool useExponent) {
-	if (useExponent) {
-		return createSdf(fGDF(p - transform, radius, exponent, begin, end));
-	} else {
-		return createSdf(fGDF(p - transform, radius, begin, end));
-	}
-}
-
-#endif // RTK_USE_GDF
-
-Sdf gen_planeInfY(vec3 p, vec3 transform) {
-	return createSdf((p - transform).y);
-}
-Sdf gen_roundBox(vec3 p, vec3 transform, vec3 scale, float radius) {
-	vec3 d = abs(p - transform)-scale;
-	return createSdf(length(max(d,0.))-radius);
-}
-Sdf gen_sphere(vec3 p, vec3 transform, float radius){
-	p -= transform;
-	return createSdf(length(p)-radius);
-}
-Sdf gen_torus(vec3 p, vec3 transform, vec2 rad){
-	p -= transform;
-	return createSdf(fTorus(p + transform, rad.x, rad.y-0.1));
-}
-
-Sdf gen_disc(vec3 p, vec3 translate, float radius) {
-	p -= translate;
-	return createSdf(fDisc(p, radius));
-}
-
 #ifdef RTK_USE_MANDELBULB
 
 Sdf gen_mandelbulb(vec3 p, vec3 translate, float power, vec2 shiftThetaPhi)
@@ -124,10 +71,6 @@ Sdf gen_mandelbulb(vec3 p, vec3 translate, float power, vec2 shiftThetaPhi)
 }
 
 #endif // RTK_USE_MANDELBULB
-
-Sdf gen_quadFrameSmooth(vec3 p, vec3 transform, vec2 size, float radius, float smoothing) {
-	return createSdf(fQuadFrameSmooth(p - transform, size, radius, smoothing));
-}
 
 Sdf gen_boxFrameSmooth(vec3 p, vec3 transform, vec3 size, float radius, float smoothing) {
 	p -= transform;
