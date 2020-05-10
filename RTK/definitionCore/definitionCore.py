@@ -1,5 +1,5 @@
 import re
-from typing import Union
+from typing import Dict, List, Union
 
 # noinspection PyUnreachableCode
 if False:
@@ -22,25 +22,49 @@ def buildName():
 		name = 'o_' + name
 	return name
 
+def _getRegularParams() -> 'List[Par]':
+	host = parent().par.Hostop.eval()
+	if not host:
+		return []
+	paramNames = parent().par.Params.eval().strip().split(' ')
+	return [
+			p
+			for p in host.pars(*[pn.strip() for pn in paramNames])
+			if p.isCustom and not (p.isPulse and p.name == 'Inspect')
+		]
+
+def _getSpecialParamNames():
+	return tdu.expand(parent().par.Specialparams.eval())
+
 def buildParamTable(dat: 'DAT'):
 	dat.clear()
 	host = parent().par.Hostop.eval()
 	if not host:
 		return
 	name = parent().par.Name.eval()
-	paramNames = parent().par.Params.eval().strip().split(' ')
-	allParamNames = [
-			p.name
-			for p in host.pars(*[pn.strip() for pn in paramNames])
-			if p.isCustom and not (p.isPulse and p.name == 'Inspect')
-		]
-	specialNames = tdu.expand(parent().par.Specialparams.eval())
-	if specialNames:
-		allParamNames += specialNames
-	dat.appendCol(
-		[
-			name + '_' + pn
-			for pn in allParamNames
+	allParamNames = [p.name for p in _getRegularParams()] + _getSpecialParamNames()
+	dat.appendCol([name + '_' + pn for pn in allParamNames])
+
+def buildParamTupletTable(dat: 'DAT'):
+	dat.clear()
+	params = _getRegularParams()
+	if not params:
+		return
+	paramsByTuplet = {}  # type: Dict[str, List[Par]]
+	for par in params:
+		if len(par.tuplet) == 1:
+			continue
+		if par.tupletName in paramsByTuplet:
+			paramsByTuplet[par.tupletName].append(par)
+		else:
+			paramsByTuplet[par.tupletName] = [par]
+	name = parent().par.Name.eval()
+	for tupletName, tupletPars in paramsByTuplet.items():
+		tupletPars = list(sorted(tupletPars, key=lambda p: p.vecIndex))
+		dat.appendRow([
+			'#define {}_{} vec{}({})'.format(
+				name, tupletName, len(tupletPars),
+				','.join([name + '_' + p.name for p in tupletPars]))
 		])
 
 def prepareBufferTable(dat):
@@ -83,6 +107,7 @@ def buildDefinition(dat: 'DAT'):
 	textures = op('textures')
 	macroTable = op('macros')
 	paramTable = op('params')
+	paramTupletTable = op('param_tuplets')
 	host = parent().par.Hostop.eval()
 	dat.appendCols([
 		['name', parent().par.Name],
@@ -91,16 +116,20 @@ def buildDefinition(dat: 'DAT'):
 		['opType', parent().par.Optype],
 		['inputName1', parent().par.Inputname1],
 		['inputName2', parent().par.Inputname2],
-		['paramTable', paramTable.path if host and paramTable.numRows > 0 and paramTable.numCols > 0 else ''],
+		['paramTable', paramTable.path if host and _isNonEmpty(paramTable) else ''],
+		['paramTupletTable', paramTupletTable.path if host and _isNonEmpty(paramTupletTable) else ''],
 		['buffers', '$'.join([c.val for c in buffers.col(0)])],
 		# Don't directly reference the CHOP itself here to avoid a dependency
 		['paramSource', parent().path + '/param_vals' if host else ''],
-		['functionPath', parent().path + '/function'],
+		['functionPath', parent().path + '/function' if host else ''],
 		['materialAddition', materialAddition],
 		['materials', f'MAT_{parent().par.Name}' if materialAddition else ''],
 		['textures', '$'.join([c.val for c in textures.col(0)])],
-		['macroTable', parent().path + '/macros' if host and macroTable.numRows > 0 and macroTable.numCols > 0 else ''],
+		['macroTable', macroTable.path if host and _isNonEmpty(macroTable) else ''],
 	])
+
+def _isNonEmpty(dat: 'DAT'):
+	return dat.numRows > 0 and dat.numCols > 0
 
 def inspect():
 	host = parent().par.Hostop.eval()

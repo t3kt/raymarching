@@ -1,4 +1,4 @@
 Sdf thismap(vec3 p, Context ctx) {
-	pReflect(p, vec3(THIS_Normalx, THIS_Normaly, THIS_Normalz), THIS_Offset);
+	pReflect(p, THIS_Normal, THIS_Offset);
 	return inputOp1(p, ctx);
 }
