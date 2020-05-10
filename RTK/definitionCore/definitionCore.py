@@ -73,8 +73,6 @@ def prepareShaderCode(code: str):
 	name = str(parent().par.Name)
 	code = code.replace('@', name + '_')
 	code = code.replace('THIS', name)
-	# encode line ends
-	code = code.replace('\n', '\\n')
 	code = _spaceRx.sub(' ', code)
 	return code
 
@@ -97,7 +95,7 @@ def buildDefinition(dat: 'DAT'):
 		['buffers', '$'.join([c.val for c in buffers.col(0)])],
 		# Don't directly reference the CHOP itself here to avoid a dependency
 		['paramSource', parent().path + '/param_vals' if host else ''],
-		['function', op('function').text],
+		['functionPath', parent().path + '/function'],
 		['materialAddition', materialAddition],
 		['materials', f'MAT_{parent().par.Name}' if materialAddition else ''],
 		['textures', '$'.join([c.val for c in textures.col(0)])],
