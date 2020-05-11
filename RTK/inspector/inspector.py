@@ -121,8 +121,59 @@ class Inspector:
 			int(o.par.Enable) if hasattr(o.par, 'Enable') else '',
 		]
 
+	@property
+	def _Definitions(self) -> 'DAT':
+		return self.ownerComp.op('definitions')
+
+	@property
+	def _SelectedDefinition(self) -> 'DAT':
+		return self.ownerComp.op('definition')
+
+	@property
+	def _SelectedOp(self) -> 'Optional[COMP]':
+		return op(self._SelectedDefinition['path', 1])
+
+	@property
+	def FunctionCodeSource(self):
+		sourceDefinition = op(self._SelectedDefinition['definitionPath', 1])
+		if not sourceDefinition:
+			return ''
+		return sourceDefinition.parent().par.Functemplate.eval() or ''
+
+	@property
+	def SelectedIsCustomOrNonCloned(self):
+		selOp = self._SelectedOp
+		if not selOp:
+			return False
+		if hasattr(selOp.par, 'Functemplate'):
+			return True
+		master = selOp.par.clone.eval()
+		return not master or master == selOp
+
+	@property
+	def FunctionCodeSourceForViewer(self):
+		selOp = self._SelectedOp
+		if not selOp:
+			return ''
+		if hasattr(selOp.par, 'Functemplate'):
+			return selOp.par.Functemplate.eval()
+		if self.SelectedIsCustomOrNonCloned:
+			return self.FunctionCodeSource
+		return self.ownerComp.op('readonly_function_code')
+
+	@property
+	def CanSaveFunctionCode(self):
+		dat = self.FunctionCodeSourceForViewer
+		if dat and getattr(dat.par, 'file') and hasattr(dat.par, 'writepulse'):
+			return True
+		return False
+
+	def SaveFunctionCode(self):
+		dat = self.FunctionCodeSourceForViewer
+		dat.par.writepulse.pulse()
+
 	def _BuildNodeTree(self) -> 'Optional[_NodeTree]':
-		definitions = self.ownerComp.op('definitions')
+		definitions = self._Definitions
 		if definitions.numRows < 2:
 			return None
 		nodesByName = {}  # type: Dict[str, _Node]
@@ -210,7 +261,7 @@ class Inspector:
 		if chan is None:
 			return
 		index = int(chan)
-		definitions = self.ownerComp.op('definitions')
+		definitions = self._Definitions
 		if index < (definitions.numRows - 1):
 			path = definitions[index + 1, 'path']
 			if path:
