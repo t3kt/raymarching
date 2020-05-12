@@ -43,6 +43,8 @@ def buildFunction(template: str):
 			)
 		# body += '\t\tdefault: {} {}; break;\n\t}}'.format(callPrefix, defaultExpr)
 		body += '{{ {} {}; }}\n'.format(callPrefix, defaultExpr)
+	if 'BODY();' in template:
+		return template.replace('BODY();', body)
 	return template.replace('BODY', body)
 
 def getOpParamList():
