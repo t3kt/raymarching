@@ -164,7 +164,7 @@ class Inspector:
 	@property
 	def CanSaveFunctionCode(self):
 		dat = self.FunctionCodeSourceForViewer
-		if dat and getattr(dat.par, 'file') and hasattr(dat.par, 'writepulse'):
+		if dat and getattr(dat.par, 'file', None) and hasattr(dat.par, 'writepulse'):
 			return True
 		return False
 
