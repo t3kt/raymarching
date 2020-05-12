@@ -135,6 +135,14 @@ class Inspector:
 
 	@property
 	def FunctionCodeSource(self):
+		selOp = self._SelectedOp
+		if selOp:
+			switcher = selOp.op('functionSwitcher')
+			if switcher:
+				if len(switcher.inputConnectors) > 1 and len(switcher.inputConnectors[1].connections) > 0:
+					func = switcher.inputConnectors[1].connections[0].owner
+					if func:
+						return func
 		sourceDefinition = op(self._SelectedDefinition['definitionPath', 1])
 		if not sourceDefinition:
 			return ''
