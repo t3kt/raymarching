@@ -1,5 +1,5 @@
 Sdf thismap(vec3 p, Context ctx) {
-	int n = int(@Instancecount);
+	int n = int(THIS_Instancecount);
 	ctx.iteration = 0;
 	ctx.total = n;
 	Sdf res = inputOp1(p, ctx);
