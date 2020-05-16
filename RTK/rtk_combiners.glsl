@@ -137,6 +137,6 @@ Sdf comb_smoothUnion(vec3 p, Sdf res1, Sdf res2, float amount){
 	return opSmoothUnionM(res1, res2, amount);
 }
 
-#define comb_subtraction  com_simpleDiff
+#define comb_subtraction  comb_simpleDiff
 
 #endif // RTK_COMBINERS
