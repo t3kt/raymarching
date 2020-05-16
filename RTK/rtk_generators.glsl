@@ -110,4 +110,37 @@ Sdf gen_boxFrameSmooth(vec3 p, vec3 transform, vec3 size, float radius, float sm
 
 #endif // RTK_USE_BOX_FRAME_SMOOTH
 
+#ifdef RTK_USE_HEX_PRISM
+
+float sdHexPrism( vec3 p, vec2 h )
+{
+	const vec3 k = vec3(-0.8660254, 0.5, 0.57735);
+	p = abs(p);
+	p.xy -= 2.0*min(dot(k.xy, p.xy), 0.0)*k.xy;
+	vec2 d = vec2(
+		length(p.xy-vec2(clamp(p.x,-k.z*h.x,k.z*h.x), h.x))*sign(p.y-h.x),
+		p.z-h.y );
+	return min(max(d.x,d.y),0.0) + length(max(d,0.0));
+}
+
+#endif // RTK_USE_HEX_PRISM
+
+#ifdef RTK_USE_TRI_PRISM
+
+float sdTriPrism( vec3 p, vec2 h )
+{
+  vec3 q = abs(p);
+  return max(q.z-h.y,max(q.x*0.866025+p.y*0.5,-p.y)-h.x*0.5);
+}
+
+#endif // RTK_USE_TRI_PRISM
+
+#ifdef RTK_USE_LINK
+float sdLink( vec3 p, float le, float r1, float r2 )
+{
+  vec3 q = vec3( p.x, max(abs(p.y)-le,0.0), p.z );
+  return length(vec2(length(q.xy)-r1,q.z)) - r2;
+}
+#endif // RTK_USE_LINK
+
 #endif // RTK_GENERATORS
