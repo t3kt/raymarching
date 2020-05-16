@@ -137,7 +137,7 @@ class Inspector:
 	def FunctionCodeSource(self):
 		selOp = self._SelectedOp
 		if selOp:
-			switcher = selOp.op('functionSwitcher')
+			switcher = selOp.op('functionSwitcher') or selOp.op('axisSwitcher')
 			if switcher:
 				if len(switcher.inputConnectors) > 1 and len(switcher.inputConnectors[1].connections) > 0:
 					func = switcher.inputConnectors[1].connections[0].owner
