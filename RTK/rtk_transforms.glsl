@@ -157,4 +157,23 @@ vec3 trans_mirrorOctantYZ(vec3 p, float sizeY, float sizeZ, float offsetY, float
 
 #endif // RTK_USE_MIRROR_OCTANT
 
+#ifdef RTK_USE_QUANTIZE
+
+float gain(float x, float k)
+{
+    float a = 0.5*pow(2.0*((x<0.5)?x:1.0-x), k);
+    return (x<0.5)?a:1.0-a;
+}
+vec3 gain(vec3 x, vec3 k)
+{
+	return vec3(gain(x.x, k.x), gain(x.y, k.y), gain(x.z, k.z));
+}
+
+vec3 trans_quantizeXYZ(vec3 p, vec3 size, vec3 offset, vec3 smoothing) {
+	p = (p + offset) / size;
+	return ((floor(p) + gain(fract(p), smoothing)) * size) - offset;
+}
+
+#endif
+
 #endif // RTK_TRANFORMS
