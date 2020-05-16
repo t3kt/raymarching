@@ -14,6 +14,7 @@ uniform vec2 enableReflectRefract = vec2(1);
 #endif
 
 uniform vec3 lights[LIGHT_COUNT];
+uniform vec4 lightColors[LIGHT_COUNT];
 
 out vec4 fragColor;
 out vec4 depthBuffer;
@@ -241,7 +242,7 @@ vec4 getMat2(float m, vec3 pos, vec3 n, vec3 ref, vec3 refraction, vec3 eye, flo
             vec3 sunDir = normalize(lightPos);
             Sdf dummy;
             float sunShadow = 1-step(castShadow(pos+n*0.001, 1*sunDir, dummy), 0.0);
-            col.rgb *= saturate(abs(fract(notGrid*0.5)*1-0.9)*10)*1.3;//vec4(0,1,0,1);    
+            col.rgb *= saturate(abs(fract(notGrid*0.5)*1-0.9)*10)*1.3;//vec4(0,1,0,1);
             col.rgb *= 0.5+sunShadow*0.5;
             return col;
         }
