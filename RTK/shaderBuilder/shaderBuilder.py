@@ -61,6 +61,11 @@ def buildShaderExports(dat):
 		'float', 'uniformarray')
 	i += 1
 	_addArray(
+		dat, i, 'vecParams',
+		parent().path + '/merged_vector_param_vals',
+		'vec4', 'uniformarray')
+	i += 1
+	_addArray(
 		dat, i, 'lights',
 		parent().par.Lightschop.eval().path if parent().par.Lightschop else '',
 		'vec3', 'uniformarray')
@@ -98,6 +103,26 @@ def buildTextureDefs(dat: 'DAT', textureTable: 'DAT'):
 			dat.appendRow([
 				f'#define {name} sTD2DInputs[{offset + i - 1}]'
 			])
+
+def buildParamAliases(dat: 'DAT', paramDetails: 'DAT'):
+	dat.clear()
+	suffixes = 'xyzw'
+	for i in range(paramDetails.numRows - 1):
+		tupletName = paramDetails[i + 1, 'tuplet']
+		size = int(paramDetails[i + 1, 'size'])
+		if size == 1:
+			name = paramDetails[i + 1, 'part1']
+			dat.appendRow([f'#define {name} vecParams[{i}].x'])
+		else:
+			if size == 4:
+				dat.appendRow([f'#define {tupletName} vecParams[{i}]'])
+			else:
+				dat.appendRow([f'#define {tupletName} vec{size}(vecParams[{i}].{suffixes[:size]})'])
+			for partI in range(1, 5):
+				name = paramDetails[i + 1, f'part{partI}']
+				if name:
+					suffix = suffixes[partI - 1]
+					dat.appendRow([f'#define {name} vecParams[{i}].{suffix}'])
 
 def stripComments(code):
 	if not code:
