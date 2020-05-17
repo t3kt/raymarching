@@ -56,11 +56,6 @@ def buildShaderExports(dat):
 	# don't directly reference the chop using `op()` since that may introduce
 	# a dependency causing extra cooks
 	_addArray(
-		dat, i, 'params',
-		parent().path + '/merged_param_vals',
-		'float', 'uniformarray')
-	i += 1
-	_addArray(
 		dat, i, 'vecParams',
 		parent().path + '/merged_vector_param_vals',
 		'vec4', 'uniformarray')
