@@ -43,29 +43,63 @@ def buildParamTable(dat: 'DAT'):
 		return
 	name = parent().par.Name.eval()
 	allParamNames = [p.name for p in _getRegularParams()] + _getSpecialParamNames()
-	dat.appendCol([name + '_' + pn for pn in allParamNames])
+	dat.appendCol([(name + '_' + pn) if pn != '_' else '_' for pn in allParamNames])
 
-def buildParamTupletTable(dat: 'DAT'):
+def buildParamDetailTable(dat: 'DAT'):
 	dat.clear()
-	params = _getRegularParams()
-	if not params:
-		return
-	paramsByTuplet = {}  # type: Dict[str, List[Par]]
-	for par in params:
-		if len(par.tuplet) == 1:
-			continue
-		if par.tupletName in paramsByTuplet:
-			paramsByTuplet[par.tupletName].append(par)
-		else:
-			paramsByTuplet[par.tupletName] = [par]
+	dat.appendRow(['tuplet', 'source', 'size', 'part1', 'part2', 'part3', 'part4'])
 	name = parent().par.Name.eval()
-	for tupletName, tupletPars in paramsByTuplet.items():
-		tupletPars = list(sorted(tupletPars, key=lambda p: p.vecIndex))
-		dat.appendRow([
-			'#define {}_{} vec{}({})'.format(
-				name, tupletName, len(tupletPars),
-				','.join([name + '_' + p.name for p in tupletPars]))
-		])
+	params = _getRegularParams()
+	if params:
+		processedTupletNames = set()
+		for par in params:
+			if par.tupletName in processedTupletNames:
+				continue
+			dat.appendRow(
+				[f'{name}_{par.tupletName}', 'param', len(par.tuplet)] + [
+					f'{name}_{p.name}' for p in par.tuplet])
+			processedTupletNames.add(par.tupletName)
+	specialNames = _getSpecialParamNames()
+	if specialNames:
+		parts = []
+		specialIndex = 0
+
+		def addSpecial():
+			cleanParts = [p for p in parts if p != '_']
+			tupletName = _getTupletName(cleanParts) or f'special{specialIndex}'
+			dat.appendRow([f'{name}_{tupletName}', 'special', len(cleanParts)] + [
+				f'{name}_{part}' for part in cleanParts
+			])
+
+		for specialName in specialNames:
+			parts.append(specialName)
+			if len(parts) == 4:
+				addSpecial()
+				parts.clear()
+				specialIndex += 1
+		if parts:
+			addSpecial()
+
+def _getTupletName(parts: List[str]):
+	if len(parts) <= 1 or len(parts[0]) <= 1:
+		return None
+	prefix = parts[0][:-1]
+	for part in parts[1:]:
+		if not part.startswith(prefix):
+			return None
+	return prefix
+
+def buildParamTupletAliases(dat: 'DAT', paramTable: 'DAT'):
+	dat.clear()
+	for i in range(1, paramTable.numRows):
+		size = int(paramTable[i, 'size'])
+		if size > 1:
+			dat.appendRow([
+				'#define {} vec{}({})'.format(paramTable[i, 'tuplet'].val, size, ','.join([
+					paramTable[i, f'part{j + 1}'].val
+					for j in range(size)
+				]))
+			])
 
 def prepareBufferTable(dat):
 	dat.clear()
@@ -108,6 +142,7 @@ def buildDefinition(dat: 'DAT'):
 	macroTable = op('macros')
 	paramTable = op('params')
 	paramTupletTable = op('param_tuplets')
+	paramDetailTable = op('param_details')
 	host = parent().par.Hostop.eval()
 	dat.appendCols([
 		['name', parent().par.Name],
@@ -118,6 +153,7 @@ def buildDefinition(dat: 'DAT'):
 		['inputName2', parent().par.Inputname2],
 		['paramTable', paramTable.path if host and _isNonEmpty(paramTable) else ''],
 		['paramTupletTable', paramTupletTable.path if host and _isNonEmpty(paramTupletTable) else ''],
+		['paramDetailTable', paramDetailTable.path if host and _isNonEmpty(paramDetailTable) else ''],
 		['buffers', '$'.join([c.val for c in buffers.col(0)])],
 		# Don't directly reference the CHOP itself here to avoid a dependency
 		['paramSource', parent().path + '/param_vals' if host else ''],
