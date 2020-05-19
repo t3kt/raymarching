@@ -35,20 +35,40 @@ class CreateOpMenu:
 		self.ownerComp = ownerComp
 		self.statePars = statePars
 
-	def CreateOp(self, path):
+	@staticmethod
+	def CreateOp(path):
 		master = op(path)
 		if not master:
-			return
+			return False
 		pane = _getActiveEditor()
 		if not pane:
-			return
+			return False
 		newOp = pane.owner.copy(master)
 		newOp.nodeX = pane.x
 		newOp.nodeY = pane.y
+		return True
 
 	def OnMouseDown(self, info: dict):
 		rowData = info.get('rowData')
 		rowObject = rowData and rowData.get('rowObject')
 		path = rowObject and rowObject.get('path')
 		if path:
-			self.CreateOp(path)
+			if self.CreateOp(path):
+				self.CloseWindow()
+
+	def OnKey(self, key: str, character: str, state: int):
+		if not state:
+			return
+		if key == 'backspace':
+			self.statePars.Filter = self.statePars.Filter.eval()[:-1]
+		elif key == 'delete':
+			self.statePars.Filter = ''
+		elif character and (character.isalnum() or character in '_*'):
+			self.statePars.Filter += character
+
+	def ShowWindow(self):
+		self.statePars.Filter = ''
+		self.ownerComp.op('menuWindow').par.winopen.pulse()
+
+	def CloseWindow(self):
+		self.ownerComp.op('menuWindow').par.winclose.pulse()
