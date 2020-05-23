@@ -101,6 +101,8 @@ Sdf comb_smoothDiff(vec3 p, Sdf res1, Sdf res2, float amount){
 	Sdf res = res1;
 	float h = clamp(0.5 - 0.5*(res2.x+res1.x)/amount, 0., 1.);
 	res.x = mix(res2.x, -res1.x, h) + amount*h*(1.0-h);
+	res.material2 = res2.y;
+	res.interpolant = h;
 	// float d = opSmoothUnionM(res1.x , res2.x, amount );
 	// float m = opSmoothUnion(res1.y , res2.y, amount );
 	return res;//opSmoothUnionM(res1 , res2, amount );
@@ -110,6 +112,8 @@ Sdf comb_smoothIntersect(vec3 p, Sdf res1, Sdf res2, float amount){
 	Sdf res = res1;
 	float h = clamp(0.5 - 0.5*(res2.x-res1.x)/amount, 0., 1.);
 	res.x = mix(res2.x, res1.x, h) + amount*h*(1.0-h);
+	res.material2 = res2.y;
+	res.interpolant = h;
 	// float d = opSmoothUnionM(res1.x , res2.x, amount );
 	// float m = opSmoothUnion(res1.y , res2.y, amount );
 	return res;//opSmoothUnionM(res1 , res2, amount );
