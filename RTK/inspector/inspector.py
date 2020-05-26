@@ -228,7 +228,7 @@ class Inspector:
 		if nodeTable.numRows < 2:
 			return
 		for nodeName in nodeTable.col('name')[1:]:
-			inputNames = nodeTable[nodeName, 'inputs'].val
+			inputNames = nodeTable[nodeName, 'inputs']
 			if not inputNames:
 				continue
 			dat.appendRows([
@@ -237,7 +237,7 @@ class Inspector:
 					nodeTable[inputName, 'col'], nodeTable[inputName, 'row'],
 					nodeTable[nodeName, 'col'], nodeTable[nodeName, 'row'],
 				]
-				for inputName in inputNames.split(' ')
+				for inputName in inputNames.val.split(' ')
 			])
 
 	@staticmethod
