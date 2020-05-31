@@ -149,6 +149,7 @@ def buildDefinition(dat: 'DAT'):
 		['path', host.path if host else ''],
 		['definitionPath', parent().path + '/definition' if host else ''],
 		['opType', parent().par.Optype],
+		['funcType', parent().par.Functype.eval() if host else ''],
 		['inputName1', parent().par.Inputname1],
 		['inputName2', parent().par.Inputname2],
 		['paramTable', paramTable.path if host and _isNonEmpty(paramTable) else ''],
