@@ -153,7 +153,7 @@ float sdHelix(vec3 p, float r1, float r2, float m, float dualSpread) {
 
 	//optimisation from Shane
 	p.xy = vec2(length(p.xz) - r1, a);
-	p.x = abs(p.x) - dualInset;
+	p.x = abs(p.x) - dualSpread;
 	return length(p.xy) - r2;
 }
 #endif // RTK_USE_HELIX
