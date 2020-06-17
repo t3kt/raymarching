@@ -1,16 +1,16 @@
 {
   "workspace": {
     "Name": "projects",
-    "Subcomptags": "",
+    "Subcomptags": "rtkGenerator rtkCombiner rtkTransform rtkMaterial",
     "Folderlayout": "subdirs"
   },
   "recorder": {
     "Folder": "S:/output/raymarching",
     "Basename": "",
-    "Addresolutionsuffix": false,
-    "Addvcodecsuffix": false,
-    "Addacodecsuffix": false,
-    "Addfpssuffix": false,
+    "Addresolutionsuffix": true,
+    "Addvcodecsuffix": true,
+    "Addacodecsuffix": true,
+    "Addfpssuffix": true,
     "Useinputres": true,
     "Inputresmult": "original",
     "Resolution1": 3840,
@@ -34,8 +34,6 @@
   },
   "previewPanel": {
     "Showaudiopreview": false,
-    "Videooutput": null,
-    "Audiooutput": null,
     "Showvideopreview": true,
     "Showvideoinfo": false
   }
