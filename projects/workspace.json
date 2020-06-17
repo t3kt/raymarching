@@ -1,0 +1,42 @@
+{
+  "workspace": {
+    "Name": "projects",
+    "Subcomptags": "",
+    "Folderlayout": "subdirs"
+  },
+  "recorder": {
+    "Folder": "S:/output/raymarching",
+    "Basename": "",
+    "Addresolutionsuffix": false,
+    "Addvcodecsuffix": false,
+    "Addacodecsuffix": false,
+    "Addfpssuffix": false,
+    "Useinputres": true,
+    "Inputresmult": "original",
+    "Resolution1": 3840,
+    "Resolution2": 2160,
+    "Videocodec": "h265nvgpu",
+    "Audiocodec": "alac",
+    "Imagefiletype": "tiff",
+    "Audiobitrate": "b128",
+    "Quality": 1.0,
+    "Fps": 30,
+    "Audioenabled": false,
+    "Videotype": "movie",
+    "Moviepixelformat": "yuv420",
+    "Bitratemode": "variable",
+    "Entropymode": "autoselect",
+    "Hapsecondarycompression": true,
+    "Profile": "autoselect",
+    "Avgbitrate": 8000,
+    "Peakbitrate": 10000,
+    "Keyframeinterval": 15
+  },
+  "previewPanel": {
+    "Showaudiopreview": false,
+    "Videooutput": null,
+    "Audiooutput": null,
+    "Showvideopreview": true,
+    "Showvideoinfo": false
+  }
+}
