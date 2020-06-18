@@ -1,6 +1,7 @@
 {
   "workspace": {
     "Name": "projects",
+    "Exposesubcomps": true,
     "Subcomptags": "rtkGenerator rtkCombiner rtkTransform rtkMaterial",
     "Folderlayout": "subdirs"
   },
