@@ -17,17 +17,26 @@ Sdf comb_intersectColumns(vec3 p, Sdf res1, Sdf res2, float radius, float num) {
 }
 
 Sdf comb_unionStairs(vec3 p, Sdf res1, Sdf res2, float radius, float num) {
+	float h = clamp(0.5 - 0.5*(res2.x+res1.x)/radius, 0., 1.);
 	res1.x = fOpUnionStairs(res1.x, res2.x, radius, num);
+	res1.material2 = res2.y;
+	res1.interpolant = h;
 	return res1;
 }
 
 Sdf comb_intersectStairs(vec3 p, Sdf res1, Sdf res2, float radius, float num) {
+	float h = clamp(0.5 - 0.5*(res2.x+res1.x)/radius, 0., 1.);
 	res1.x = fOpIntersectionStairs(res1.x, res2.x, radius, num);
+	res1.material2 = res2.y;
+	res1.interpolant = h;
 	return res1;
 }
 
 Sdf comb_diffStairs(vec3 p, Sdf res1, Sdf res2, float radius, float num) {
+	float h = clamp(0.5 - 0.5*(res2.x+res1.x)/radius, 0., 1.);
 	res1.x = fOpDifferenceStairs(res1.x, res2.x, radius, num);
+	res1.material2 = res2.y;
+	res1.interpolant = h;
 	return res1;
 }
 
