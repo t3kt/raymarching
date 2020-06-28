@@ -158,4 +158,15 @@ float sdHelix(vec3 p, float r1, float r2, float m, float dualSpread) {
 }
 #endif // RTK_USE_HELIX
 
+#ifdef RTK_USE_SOLID_ANGLE
+float sdSolidAngle(vec3 p, vec2 c, float ra)
+{
+  // c is the sin/cos of the angle
+  vec2 q = vec2( length(p.xz), p.y );
+  float l = length(q) - ra;
+  float m = length(q - c*clamp(dot(q,c),0.0,ra) );
+  return max(l,m*sign(c.y*q.x-c.x*q.y));
+}
+#endif // RTK_USE_SOLID_ANGLE
+
 #endif // RTK_GENERATORS
