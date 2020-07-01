@@ -1,6 +1,21 @@
 #ifndef RTK_COMBINERS
 #define RTK_COMBINERS
 
+float fOpUnionStairs(float a, float b, float r, float n, float o) {
+	float s = r/n;
+	float u = b-r;
+	return min(min(a,b), 0.5 * (u + a + abs ((mod (u - a + s + o, 2 * s)) - s)));
+}
+
+// We can just call Union since stairs are symmetric.
+float fOpIntersectionStairs(float a, float b, float r, float n, float o) {
+	return -fOpUnionStairs(-a, -b, r, n, o);
+}
+
+float fOpDifferenceStairs(float a, float b, float r, float n, float o) {
+	return -fOpUnionStairs(-a, b, r, n, o);
+}
+
 Sdf comb_diffColumns(vec3 p, Sdf res1, Sdf res2, float radius, float num) {
 	res1.x = fOpDifferenceColumns(res1.x, res2.x, radius, num);
 	return res1;
@@ -16,25 +31,25 @@ Sdf comb_intersectColumns(vec3 p, Sdf res1, Sdf res2, float radius, float num) {
 	return res1;
 }
 
-Sdf comb_unionStairs(vec3 p, Sdf res1, Sdf res2, float radius, float num) {
+Sdf comb_unionStairs(vec3 p, Sdf res1, Sdf res2, float radius, float num, float offset) {
 	float h = clamp(0.5 - 0.5*(res2.x+res1.x)/radius, 0., 1.);
-	res1.x = fOpUnionStairs(res1.x, res2.x, radius, num);
+	res1.x = fOpUnionStairs(res1.x, res2.x, radius, num, offset);
 	res1.material2 = res2.y;
 	res1.interpolant = h;
 	return res1;
 }
 
-Sdf comb_intersectStairs(vec3 p, Sdf res1, Sdf res2, float radius, float num) {
+Sdf comb_intersectStairs(vec3 p, Sdf res1, Sdf res2, float radius, float num, float offset) {
 	float h = clamp(0.5 - 0.5*(res2.x+res1.x)/radius, 0., 1.);
-	res1.x = fOpIntersectionStairs(res1.x, res2.x, radius, num);
+	res1.x = fOpIntersectionStairs(res1.x, res2.x, radius, num, offset);
 	res1.material2 = res2.y;
 	res1.interpolant = h;
 	return res1;
 }
 
-Sdf comb_diffStairs(vec3 p, Sdf res1, Sdf res2, float radius, float num) {
+Sdf comb_diffStairs(vec3 p, Sdf res1, Sdf res2, float radius, float num, float offset) {
 	float h = clamp(0.5 - 0.5*(res2.x+res1.x)/radius, 0., 1.);
-	res1.x = fOpDifferenceStairs(res1.x, res2.x, radius, num);
+	res1.x = fOpDifferenceStairs(res1.x, res2.x, radius, num, offset);
 	res1.material2 = res2.y;
 	res1.interpolant = h;
 	return res1;
