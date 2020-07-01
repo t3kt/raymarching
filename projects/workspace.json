@@ -1,29 +1,36 @@
 {
   "workspace": {
-    "Name": "projects",
+    "Name": "raymarching",
     "Exposesubcomps": true,
     "Subcomptags": "rtkGenerator rtkCombiner rtkTransform rtkMaterial",
     "Folderlayout": "subdirs"
   },
   "recorder": {
     "Folder": "S:/output/raymarching",
-    "Basename": "",
+    "Basename": {
+      "$": "ipar.workspace.Name"
+    },
+    "Includedate": true,
+    "Datetype": "today",
+    "Customdate": "",
+    "Suffix": {
+      "$": "ipar.editorState.Name"
+    },
     "Addresolutionsuffix": true,
     "Addvcodecsuffix": true,
     "Addacodecsuffix": true,
     "Addfpssuffix": true,
-    "Useinputres": true,
-    "Inputresmult": "original",
+    "Outputresolution": "useinput",
     "Resolution1": 3840,
     "Resolution2": 2160,
     "Videocodec": "h265nvgpu",
+    "Videotype": "movie",
     "Audiocodec": "alac",
     "Imagefiletype": "tiff",
     "Audiobitrate": "b128",
     "Quality": 1.0,
     "Fps": 30,
     "Audioenabled": false,
-    "Videotype": "movie",
     "Moviepixelformat": "yuv420",
     "Bitratemode": "variable",
     "Entropymode": "autoselect",
@@ -33,14 +40,17 @@
     "Peakbitrate": 10000,
     "Keyframeinterval": 15
   },
-  "previewPanel": {
-    "Showaudiopreview": false,
-    "Showvideopreview": true,
-    "Showvideoinfo": false
-  },
   "libraryLoader": {
-    "Libraries": [
-      "rtk@../RTK/RTK.tox"
-    ]
+    "Libraries": {
+      "$": "['rtk@../RTK/RTK.tox']"
+    }
+  },
+  "editorUIState": {
+    "Selectedview": "preview_panel",
+    "Selectedleftpanel": "component_picker",
+    "Selectedrightpanel": "recorder",
+    "Previewshowaudio": false,
+    "Previewshowvideo": true,
+    "Previewshowvideoinfo": false
   }
 }
