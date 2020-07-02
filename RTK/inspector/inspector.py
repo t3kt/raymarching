@@ -129,7 +129,7 @@ class Inspector:
 
 	@property
 	def _SelectedDefinition(self) -> 'DAT':
-		return self.ownerComp.op('definition')
+		return ipar.inspectorCore.Selecteddefinition.eval()
 
 	@property
 	def _SelectedOp(self) -> 'Optional[COMP]':
