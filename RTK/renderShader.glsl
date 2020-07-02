@@ -1,11 +1,9 @@
-uniform vec2 iResolution;
-uniform float iTime;
 uniform vec3 camPos;
-uniform vec3 camLookAt;
+//uniform vec3 camLookAt;
 uniform vec3 camRot;
 uniform float gridOffset;
 uniform float FOV;
-uniform mat4 camMat;
+//uniform mat4 camMat;
 uniform int displayGrid;
 uniform vec2 enableReflectRefract = vec2(1);
 
@@ -131,55 +129,46 @@ Sdf castRay(in vec3 ro, in vec3 rd, float renderDepth, float prec)
 {
 	float tmin = 0.1;
 	float tmax = min(50.0, renderDepth);
-
-	float t = tmin;
-	float m = -2.0;
-	float material2 = 0;
-	float interpolant = 0;
-	float ior = 1;
-	bool refract = false;
-	bool reflect = false;
+	Sdf result;
+	result.x = tmin;
+	result.y = -2.0;
+	result.material2 = 0;
+	result.interpolant = 0;
+	result.ior = 1;
+	result.refract = false;
+	result.reflect = false;
 	vec3 pos = vec3(0);
 	for (int i=0; i<pow(2, 8); i++)
 	{
-		float precis = prec*t;
-		pos = (ro+rd*t);
+		float precis = prec*result.x;
+		pos = (ro+rd*result.x);
 		Sdf res = map(pos);
 		if (displayGrid==1){
 			res = opU(res, distGrid(pos, gridOffset));// draw distance grid plane
 		}
-		refract = res.refract;
-		reflect = res.reflect;
-		material2 = res.material2;
-		interpolant = res.interpolant;
-		ior = res.ior;
+		result.refract = res.refract;
+		result.reflect = res.reflect;
+		result.material2 = res.material2;
+		result.interpolant = res.interpolant;
+		result.ior = res.ior;
 
-		if (res.x<precis || t>tmax) break;
-		t += res.x;
-		m = res.y;
+		if (res.x<precis || result.x>tmax) break;
+		result.x += res.x;
+		result.y = res.y;
 		if (abs(pos.x)>limitBox.x||abs(pos.y)>limitBox.y||abs(pos.z)>limitBox.z)
 		{
-			m = -1;
+			result.y = -1;
 			break;
 		}
 	}
 
-	if (t>tmax) {
-		m=-1.0;
-		refract = false;
-		reflect = false;
-		interpolant = 0;
-		ior = 1;
+	if (result.x>tmax) {
+		result.y=-1.0;
+		result.refract = false;
+		result.reflect = false;
+		result.interpolant = 0;
+		result.ior = 1;
 	}
-
-	Sdf result;
-	result.x = t;
-	result.y = m;
-	result.refract =refract;
-	result.reflect =reflect;
-	result.material2 =material2;
-	result.interpolant =interpolant;
-	result.ior =ior;
 
 	return result;
 }
@@ -321,8 +310,9 @@ float castInside(vec3 ro, vec3 rd){
 
 void main()
 {
-	vec2 fragCoord = vUV.st*iResolution.xy;
-	vec2 p = (-iResolution.xy+2.0*fragCoord.xy)/iResolution.y;
+	vec2 resolution = uTDOutputInfo.res.zw;
+	vec2 fragCoord = vUV.st*resolution;
+	vec2 p = (-resolution+2.0*fragCoord.xy)/resolution.y;
 
 	vec2 q = vUV.st;
 	float renderDepth = texture(sTD2DInputs[0], vUV.st).r;
@@ -330,7 +320,7 @@ void main()
 	//-----------------------------------------------------
 	// camera
 	//-----------------------------------------------------
-	float aspect = iResolution.x/iResolution.y;
+	float aspect = resolution.x/resolution.y;
 	float screenWidth = 2*(aspect);
 	float distanceToScreen = (screenWidth/2)/tan(FOV/2)*1;
 
@@ -424,7 +414,6 @@ void main()
 						firstPos = posFin;
 						firstRd = outSideRd;
 						firstNor = norRefr;
-
 					}
 				}
 				refrCol = vec3(1, 0, 0);
