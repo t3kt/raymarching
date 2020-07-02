@@ -1,5 +1,5 @@
 import re
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 from dataclasses import dataclass, field
 
 # noinspection PyUnreachableCode
@@ -8,6 +8,8 @@ if False:
 	from _stubs import *
 	from _stubs.ArcBallExt import ArcBallExt
 	ext.Inspector = Inspector()
+	ipar = Any()
+	ipar.inspectorCore = Any()
 
 def extractShaderPartNames(shaderCode):
 	if not shaderCode:
@@ -123,7 +125,7 @@ class Inspector:
 
 	@property
 	def _Definitions(self) -> 'DAT':
-		return self.ownerComp.op('definitions')
+		return ipar.inspectorCore.Definitions.eval()
 
 	@property
 	def _SelectedDefinition(self) -> 'DAT':
