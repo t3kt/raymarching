@@ -40,6 +40,18 @@ Context defaultContext() {
 	return ctx;
 }
 
+struct MatInputs {
+	Sdf res;
+	vec3 pos;
+	vec3 n;
+	vec3 ref;
+	vec3 refraction;
+	vec3 eye;
+	float occ;
+	float occ2;
+	float t;
+	vec3 rd;
+};
 
 vec3 opTwist(vec3 p, float k){
 	// const float k = 10.0;

@@ -173,9 +173,17 @@ Sdf castRay(in vec3 ro, in vec3 rd, float renderDepth, float prec)
 	return result;
 }
 
+vec4 getMat2(float m, MatInputs matIn) {
+	vec3 pos = matIn.pos;
+	vec3 n = matIn.n;
+	vec3 ref = matIn.ref;
+	vec3 refraction = matIn.refraction;
+	vec3 eye = matIn.eye;
+	float occ = matIn.occ;
+	float occ2 = matIn.occ2;
+	float t = matIn.t;
+	vec3 rd = matIn.rd;
 
-
-vec4 getMat2(float m, vec3 pos, vec3 n, vec3 ref, vec3 refraction, vec3 eye, float occ, float occ2, float t, vec3 rd){
 
 	vec4 col = vec4(vec3(0.5), 1);
 	vec3 lightPos = lights[0].xyz;
@@ -245,12 +253,23 @@ vec4 getMat2(float m, vec3 pos, vec3 n, vec3 ref, vec3 refraction, vec3 eye, flo
 }
 vec4 getMat(Sdf res, vec3 pos, vec3 n, vec3 ref, vec3 refraction, vec3 eye, float occ, float occ2, float t, vec3 rd){
 	float m = res.y;
+	MatInputs matIn;
+	matIn.res = res;
+	matIn.pos = pos;
+	matIn.n = n;
+	matIn.ref = ref;
+	matIn.refraction = refraction;
+	matIn.eye = eye;
+	matIn.occ = occ;
+	matIn.occ2 = occ2;
+	matIn.t = t;
+	matIn.rd = rd;
 	if (res.interpolant==0){
-		return getMat2(floor(m), pos, n, ref, refraction, eye, occ, occ2, t, rd);
+		return getMat2(floor(m), matIn);
 	}
 	else {
-		vec4 c1 = getMat2(m, pos, n, ref, refraction, eye, occ, occ2, t, rd);
-		vec4 c2 = getMat2(res.material2, pos, n, ref, refraction, eye, occ, occ2, t, rd);
+		vec4 c1 = getMat2(m, matIn);
+		vec4 c2 = getMat2(res.material2, matIn);
 		float k = 1;
 
 		vec4 col = mix(c1, c2, res.interpolant);// - k*res.interpolant*(1.0-res.interpolant);
@@ -258,33 +277,6 @@ vec4 getMat(Sdf res, vec3 pos, vec3 n, vec3 ref, vec3 refraction, vec3 eye, floa
 		return col;
 	}
 }
-// vec4 getMat(float m, vec3 pos, vec3 n, vec3 ref, vec3 refraction, vec3 eye, float occ, float occ2, float t, vec3 rd){
-// 	if (abs(fract(m))==0){
-// 		return getMat2(floor(m), pos, n, ref, refraction, eye, occ, occ2, t, rd);
-// 	}
-// 	else{
-// 		vec4 c1 = getMat2(floor(m), pos, n, ref, refraction, eye, occ, occ2, t, rd);
-//     	vec4 c2 = getMat2(ceil(m), pos, n, ref, refraction, eye, occ, occ2, t, rd);
-//     	vec4 col = mix(c1,c2,fract(m));//vec4(1,0,0,1);
-//     	return col;
-// 	}
-// }
-
-// float castShadow(vec3 ro, vec3 rd){
-// 	float res = 1;
-// 	float t = 0.8;
-// 	for (int i=0;i<50; i++){
-// 		vec3 pos = ro + rd*t;
-// 		float h = map(pos).x;
-// 		res = min(res,0.8*h/t);
-// 		// if(t>0.01) break;
-// 		h+=t;
-// 		if(t>10) break;
-
-// 	}
-
-// 	return clamp(res, 0., 1.);
-// }
 
 float castInside(vec3 ro, vec3 rd){
 	float res = 0.1;
