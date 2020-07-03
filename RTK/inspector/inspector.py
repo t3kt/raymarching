@@ -1,4 +1,3 @@
-import re
 from typing import Any, Dict, List, Optional, Union
 from dataclasses import dataclass, field
 
@@ -10,21 +9,6 @@ if False:
 	ext.Inspector = Inspector()
 	ipar = Any()
 	ipar.inspectorCore = Any()
-
-def extractShaderPartNames(shaderCode):
-	if not shaderCode:
-		return []
-	return re.findall(r'///----BEGIN (\w+)', shaderCode)
-
-def filterShaderCode(shaderCode, part):
-	if not shaderCode:
-		return ''
-	if not part or part == 'all':
-		return shaderCode
-	match = re.search(r'///----BEGIN {0}\n(.*)\n///----END {0}'.format(part), shaderCode, re.DOTALL)
-	if not match:
-		return ''
-	return match.group(1)
 
 
 # the drop function takes the following arguments and according to the dropped type
