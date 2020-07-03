@@ -28,6 +28,26 @@ def onDrop(dropName, xPos, yPos, index, totalDragged, dropExt, baseName, destPat
 	o = parentOp.op(dropName)
 	ext.Inspector.AttachTo(o)
 
+def _hasRtkTag(o: COMP):
+	for tag in o.tags:
+		if tag.startswith('rtk'):
+			return True
+	return False
+
+def _findRtkOp(o: COMP):
+	if not o or not o.isCOMP:
+		return None
+	if _hasRtkTag(o):
+		if o.op('definition') or o.op('definition_out'):
+			return o
+	for child in o.findChildren(tags=['rtkRender']):
+		return child
+	children = o.findChildren(tags=['rtk*'])
+	for child in sorted(children, key=lambda c: c.nodeX, reverse=True):
+		if child.op('definition') or child.op('definition_out'):
+			return child
+	return None
+
 class Inspector:
 	def __init__(self, ownerComp):
 		self.ownerComp = ownerComp
@@ -43,15 +63,18 @@ class Inspector:
 		self.ownerComp.par.Hostop = hostOp or ''
 
 	def AttachTo(self, hostOp: 'Optional[COMP]'):
-		if hostOp and (not hostOp.isCOMP or not (hostOp.op('definition') or hostOp.op('definition_out'))):
-			return
-		self._HostOp = hostOp.path if hostOp else ''
-		self.statePar.Selectedop = ''
-		if hostOp:
-			self.AttachRenderer()
-			self.OpenWindow()
-		else:
+		if not hostOp or not hostOp.isCOMP:
+			self._HostOp = ''
+			self.statePar.Selectedop = ''
 			self.DetachRenderer()
+			return
+		hostOp = _findRtkOp(hostOp)
+		if not hostOp:
+			return
+		self._HostOp = hostOp.path
+		self.statePar.Selectedop = ''
+		self.AttachRenderer()
+		self.OpenWindow()
 
 	def Detatch(self):
 		self.AttachTo(None)
