@@ -317,4 +317,75 @@ float sdVesica(vec2 p, float r, float d)
     return ((p.y-b)*d>p.x*b) ? length(p-vec2(0.0,b))
                              : length(p-vec2(-d,0.0))-r;
 }
+
+float sdParabola( in vec2 pos, in float k )
+{
+    pos.x = abs(pos.x);
+    float ik = 1.0/k;
+    float p = ik*(pos.y - 0.5*ik)/3.0;
+    float q = 0.25*ik*ik*pos.x;
+    float h = q*q - p*p*p;
+    float r = sqrt(abs(h));
+    float x = (h>0.0) ?
+        pow(q+r,1.0/3.0) - pow(abs(q-r),1.0/3.0)*sign(r-q) :
+        2.0*cos(atan(r,q)/3.0)*sqrt(p);
+    return length(pos-vec2(x,k*x*x)) * sign(pos.x-x);
+}
+
+float sdParabolaSegment( in vec2 pos, in float wi, in float he )
+{
+    pos.x = abs(pos.x);
+    float ik = wi*wi/he;
+    float p = ik*(he-pos.y-0.5*ik)/3.0;
+    float q = pos.x*ik*ik*0.25;
+    float h = q*q - p*p*p;
+    float r = sqrt(abs(h));
+    float x = (h>0.0) ?
+        pow(q+r,1.0/3.0) - pow(abs(q-r),1.0/3.0)*sign(r-q) :
+        2.0*cos(atan(r,q)/3.0)*sqrt(p);
+    x = clamp(x,-wi,wi);
+    return length(pos-vec2(x,he-x*x/ik)) * sign(pos.x-x);
+}
+
+#ifdef RTK_USE_BEZIER
+
+float sdBezier( in vec2 pos, in vec2 A, in vec2 B, in vec2 C )
+{
+    vec2 a = B - A;
+    vec2 b = A - 2.0*B + C;
+    vec2 c = a * 2.0;
+    vec2 d = A - pos;
+    float kk = 1.0/dot(b,b);
+    float kx = kk * dot(a,b);
+    float ky = kk * (2.0*dot(a,a)+dot(d,b)) / 3.0;
+    float kz = kk * dot(d,a);
+    float res = 0.0;
+    float p = ky - kx*kx;
+    float p3 = p*p*p;
+    float q = kx*(2.0*kx*kx-3.0*ky) + kz;
+    float h = q*q + 4.0*p3;
+    if( h >= 0.0)
+    {
+        h = sqrt(h);
+        vec2 x = (vec2(h,-h)-q)/2.0;
+        vec2 uv = sign(x)*pow(abs(x), vec2(1.0/3.0));
+        float t = clamp( uv.x+uv.y-kx, 0.0, 1.0 );
+        res = dot2(d + (c + b*t)*t);
+    }
+    else
+    {
+        float z = sqrt(-p);
+        float v = acos( q/(p*z*2.0) ) / 3.0;
+        float m = cos(v);
+        float n = sin(v)*1.732050808;
+        vec3  t = clamp(vec3(m+m,-n-m,n-m)*z-kx,0.0,1.0);
+        res = min( dot2(d+(c+b*t.x)*t.x),
+                   dot2(d+(c+b*t.y)*t.y) );
+        // the third root cannot be the closest
+        // res = min(res,dot2(d+(c+b*t.z)*t.z));
+    }
+    return sqrt( res );
+}
+#endif // RTK_USE_BEZIER
+
 #endif // RTK_GENERATORS
