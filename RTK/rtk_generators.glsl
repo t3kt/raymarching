@@ -188,4 +188,43 @@ float sdBoundingBox( vec3 p, vec3 b, float e )
       length(max(vec3(q.x,q.y,p.z),0.0))+min(max(q.x,max(q.y,p.z)),0.0));
 }
 
+float sdPentagon( in vec2 p, in float r )
+{
+    const vec3 k = vec3(0.809016994,0.587785252,0.726542528);
+    p.x = abs(p.x);
+    p -= 2.0*min(dot(vec2(-k.x,k.y),p),0.0)*vec2(-k.x,k.y);
+    p -= 2.0*min(dot(vec2( k.x,k.y),p),0.0)*vec2( k.x,k.y);
+    p -= vec2(clamp(p.x,-r*k.z,r*k.z),r);
+    return length(p)*sign(p.y);
+}
+
+float sdHexagon( in vec2 p, in float r )
+{
+    const vec3 k = vec3(-0.866025404,0.5,0.577350269);
+    p = abs(p);
+    p -= 2.0*min(dot(k.xy,p),0.0)*k.xy;
+    p -= vec2(clamp(p.x, -k.z*r, k.z*r), r);
+    return length(p)*sign(p.y);
+}
+
+float sdOctagon( in vec2 p, in float r )
+{
+    const vec3 k = vec3(-0.9238795325, 0.3826834323, 0.4142135623 );
+    p = abs(p);
+    p -= 2.0*min(dot(vec2( k.x,k.y),p),0.0)*vec2( k.x,k.y);
+    p -= 2.0*min(dot(vec2(-k.x,k.y),p),0.0)*vec2(-k.x,k.y);
+    p -= vec2(clamp(p.x, -k.z*r, k.z*r), r);
+    return length(p)*sign(p.y);
+}
+
+float sdEgg( in vec2 p, in float ra, in float rb )
+{
+    const float k = sqrt(3.0);
+    p.x = abs(p.x);
+    float r = ra - rb;
+    return ((p.y<0.0)       ? length(vec2(p.x,  p.y    )) - r :
+            (k*(p.x+r)<p.y) ? length(vec2(p.x,  p.y-k*r)) :
+                              length(vec2(p.x+r,p.y    )) - 2.0*r) - rb;
+}
+
 #endif // RTK_GENERATORS

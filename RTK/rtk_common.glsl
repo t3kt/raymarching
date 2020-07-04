@@ -311,3 +311,5 @@ int quadrantIndex(ivec2 cell) {
 		*/
 		return (((cell.y + 1) / 2) * 2) + ((cell.x + 1) / 2);
 }
+
+float ndot( in vec2 a, in vec2 b ) { return a.x*b.x - a.y*b.y; }
