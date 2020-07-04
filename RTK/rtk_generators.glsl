@@ -347,6 +347,26 @@ float sdParabolaSegment( in vec2 pos, in float wi, in float he )
     return length(pos-vec2(x,he-x*x/ik)) * sign(pos.x-x);
 }
 
+float sdArc( in vec2 p, in vec2 sca, in vec2 scb, in float ra, float rb )
+{
+    p *= mat2(sca.x,sca.y,-sca.y,sca.x);
+    p.x = abs(p.x);
+    float k = (scb.y*p.x>scb.x*p.y) ? dot(p.xy,scb) : length(p.xy);
+    return sqrt( dot(p,p) + ra*ra - 2.0*ra*k ) - rb;
+}
+
+float sdHorseshoe( in vec2 p, in vec2 c, in float r, in vec2 w )
+{
+    p.x = abs(p.x);
+    float l = length(p);
+    p = mat2(-c.x, c.y,
+              c.y, c.x)*p;
+    p = vec2((p.y>0.0)?p.x:l*sign(-c.x),
+             (p.x>0.0)?p.y:l );
+    p = vec2(p.x,abs(p.y-r))-w;
+    return length(max(p,0.0)) + min(0.0,max(p.x,p.y));
+}
+
 #ifdef RTK_USE_BEZIER
 
 float sdBezier( in vec2 pos, in vec2 A, in vec2 B, in vec2 C )
