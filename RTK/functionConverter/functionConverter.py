@@ -46,6 +46,12 @@ def _scalarToSdf(inputCode: str, inputName: str):
 		inputCode, inputName, oldName,
 		f'createSdf({oldName}(p, ctx))')
 
+def _scalarToSdf2d(inputCode: str, inputName: str):
+	oldName = inputName + '_ORIG'
+	outputAxis = parent().par.Output2daxis.eval()
+
+	pass
+
 def _vectorToScalar(inputCode: str, inputName: str):
 	oldName = inputName + '_ORIG'
 	inputPart = parent().par.Inputvectorpart.eval()
@@ -59,6 +65,13 @@ def _vectorToSdf(inputCode: str, inputName: str):
 	return _convertWithMacro(
 		inputCode, inputName, oldName,
 		f'createSdf({oldName}(p, ctx).{inputPart})')
+
+def _vectorToSdf2d(inputCode: str, inputName: str):
+	oldName = inputName + '_ORIG'
+	inputPart1 = parent().par.Inputvectorpart.eval()
+	inputPart2 = parent().par.Inputvectorpart2.eval()
+	# wrapperFunc = 'vec2 {}(vec3 p'
+	pass
 
 def _sdfToScalar(inputCode: str, inputName: str):
 	oldName = inputName + '_ORIG'
