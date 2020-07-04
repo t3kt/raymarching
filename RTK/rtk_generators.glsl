@@ -177,4 +177,15 @@ float sdRhombus(vec3 p, float la, float lb, float h, float ra)
   vec2 q = vec2(length(p.xz-0.5*b*vec2(1.0-f,1.0+f))*sign(p.x*b.y+p.z*b.x-b.x*b.y)-ra, p.y-h);
   return min(max(q.x,q.y),0.0) + length(max(q,0.0));
 }
+
+float sdBoundingBox( vec3 p, vec3 b, float e )
+{
+       p = abs(p  )-b;
+  vec3 q = abs(p+e)-e;
+  return min(min(
+      length(max(vec3(p.x,q.y,q.z),0.0))+min(max(p.x,max(q.y,q.z)),0.0),
+      length(max(vec3(q.x,p.y,q.z),0.0))+min(max(q.x,max(p.y,q.z)),0.0)),
+      length(max(vec3(q.x,q.y,p.z),0.0))+min(max(q.x,max(q.y,p.z)),0.0));
+}
+
 #endif // RTK_GENERATORS
