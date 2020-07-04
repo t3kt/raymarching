@@ -176,4 +176,14 @@ vec3 trans_quantizeXYZ(vec3 p, vec3 size, vec3 offset, vec3 smoothing) {
 
 #endif
 
+#ifdef RTK_USE_WAVE
+
+#define wave_sin(x)  sin(x * TAU)
+#define wave_cos(x)  cos(x * TAU)
+#define wave_tri(x)  (abs(4.*fract(x)-2.)-1.)
+#define wave_square(x) (2.*step(fract(x), 0.5)-1.)
+#define wave_ramp(x)  fract(x)
+
+#endif // RTK_USE_WAVE
+
 #endif // RTK_TRANFORMS
