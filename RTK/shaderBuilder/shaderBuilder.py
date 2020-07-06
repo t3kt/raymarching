@@ -60,16 +60,17 @@ def buildShaderExports(dat):
 		parent().path + '/merged_vector_param_vals',
 		'vec4', 'uniformarray')
 	i += 1
-	_addArray(
-		dat, i, 'lights',
-		parent().par.Lightschop.eval().path if parent().par.Lightschop else '',
-		'vec3', 'uniformarray')
-	i += 1
-	_addArray(
-		dat, i, 'lightColors',
-		parent().par.Lightcolorschop.eval().path if parent().par.Lightcolorschop else '',
-		'vec4', 'uniformarray')
-	i += 1
+	if parent().par.Supportlights:
+		_addArray(
+			dat, i, 'lights',
+			parent().par.Lightschop.eval().path if parent().par.Lightschop else '',
+			'vec3', 'uniformarray')
+		i += 1
+		_addArray(
+			dat, i, 'lightColors',
+			parent().par.Lightcolorschop.eval().path if parent().par.Lightcolorschop else '',
+			'vec4', 'uniformarray')
+		i += 1
 	buffTbl = op('buffer_table')
 	for row in range(1, buffTbl.numRows):
 		_addArray(
