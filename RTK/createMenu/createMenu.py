@@ -1,3 +1,6 @@
+from dataclasses import dataclass, field
+from typing import Set
+
 # noinspection PyUnreachableCode
 if False:
 	# noinspection PyUnresolvedReferences
@@ -72,3 +75,58 @@ class CreateOpMenu:
 
 	def CloseWindow(self):
 		self.ownerComp.op('menuWindow').par.winclose.pulse()
+
+	def BuildTreeItemsJson(self, ropTable: 'DAT'):
+		rops = _RopInfo.fromTable(ropTable)
+		ropsByCategory = {
+			'field': [],
+			'generator2d': [],
+			'generator': [],
+			'filter': [],
+			'material': [],
+			'special': [],
+		}
+		for rop in rops:
+			(ropsByCategory.get(rop.category) or ropsByCategory['special']).append(rop)
+		pass
+
+@dataclass
+class _RopInfo:
+	name: str
+	path: str
+	tags: Set[str] = field(default_factory=set)
+	category: str = None
+
+	@classmethod
+	def fromRow(cls, ropTable: 'DAT', row: int):
+		tags = set(ropTable[row, 'tags'].val.split(' '))
+		return cls(
+			ropTable[row, 'name'].val,
+			ropTable[row, 'path'].val,
+			tags=tags,
+			category=_determineCategory(tags),
+		)
+
+	@classmethod
+	def fromTable(cls, ropTable: 'DAT'):
+		return [
+			cls.fromRow(ropTable, row)
+			for row in range(1, ropTable.numRows)
+		]
+
+def _determineCategory(tags: Set[str]):
+	if 'rtkField' in tags:
+		return 'field'
+	elif 'rtkGenerator' in tags:
+		if 'rtk2d' in tags:
+			return 'generator2d'
+		else:
+			return 'generator'
+	elif 'rtkFilter' in tags or 'rtkTransform' in tags:
+		return 'filter'
+	elif 'rtkCombiner' in tags:
+		return 'combiner'
+	elif 'rtkMaterial' in tags:
+		return 'material'
+	else:
+		return 'special'
