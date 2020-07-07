@@ -1,4 +1,4 @@
-Sdf thismap__step(vec3 p, Context ctx, Sdf res1) {
+Sdf thismap__step(COORD p, Context ctx, Sdf res1) {
 	Sdf res2 = inputOp1(p, ctx);
 	Sdf res;
 BODY();

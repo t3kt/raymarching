@@ -1,5 +1,1 @@
-Sdf thismap(vec3 p, Context ctx){
-	Sdf res1 = inputOp1(p, ctx);
-	Sdf res2 = inputOp2(p, ctx);
-	return comb_intersectChamfer(p, res1, res2, THIS_Radius);
-}
+#define thismap(p, ctx) comb_intersectChamfer(inputOp1(p, ctx), inputOp2(p, ctx), THIS_Radius)
