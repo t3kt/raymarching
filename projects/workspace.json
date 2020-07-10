@@ -52,5 +52,19 @@
     "Previewshowaudio": false,
     "Previewshowvideo": true,
     "Previewshowvideoinfo": false
+  },
+  "editorViews": {
+    "Customviews": [
+      {
+        "name": "rtkInspector",
+        "copyOf": {"$": "op.rtk.op('inspector')"},
+        "pars": {
+          "Hostop": {"$":  "iop.hostedComp or ''"},
+          "Showheaderbar": false,
+          "Showinfobar": false,
+          "Showtoolbar": false
+        }
+      }
+    ]
   }
 }
