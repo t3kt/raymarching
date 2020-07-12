@@ -5,6 +5,7 @@ Sdf thismap(vec3 p, Context ctx) {
 	Sdf res = inputOp1(p, ctx);
 	for (int i = 1; i < n; i++) {
 		ctx.iteration = i;
+		ctx.total = n;
 		res = comb_simpleUnion(res, inputOp1(p, ctx));
 	}
 	return res;
