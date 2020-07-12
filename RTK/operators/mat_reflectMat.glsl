@@ -10,7 +10,7 @@ Sdf thismap(vec3 p, Context ctx) {
 vec3 THIS_getColor(MatInputs matIn, vec3 lightPos, vec3 lightColor) {
 	vec3 col = THIS_Color;
 	col += texture(THIS_texture, matIn.pos.xz*vec2(THIS_Texscalex, THIS_Texscaley)).rgb*THIS_Texamount;
-	float ks= 0.5;
+	float ks= THIS_Ks;
 	// // lighting
 	float sky = 0.5 + 0.5*matIn.n.y*1;
 	float fre = clamp( 1.0 + dot(matIn.n,matIn.rd), 0.0, 1.0 );
