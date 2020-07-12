@@ -97,6 +97,13 @@ float hash1( in vec2 f )
     return fract(sin(f.x+131.1*f.y)*43758.5453123);
 }
 
+float sampledRandom(in vec2 p) {
+	return texture(sTDNoiseMap, mod(p + vec2(17, 89), vec2(256))).r;
+}
+
+vec2 proceduralWhiteNoise(in vec2 p) {
+	return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453);
+}
 
 Sdf distGrid(in vec3 p, float elev){
 	Sdf res;
