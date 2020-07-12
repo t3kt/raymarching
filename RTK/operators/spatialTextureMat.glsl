@@ -1,15 +1,13 @@
 Sdf thismap(vec3 p, Context ctx){
-	int matID = THIS_matID;
 	Sdf res;
 	res.x = inputOp1(p, ctx).x;
-	res.y = matID;
+	res.y = THIS_matID;
 	res.refract = false;
 	res.reflect = false;
 	return res;
 }
 
 vec3 THIS_getColor(MatInputs matIn, vec3 lightPos, vec3 lightColor) {
-	// vec4 getMat(float m, vec3 pos, vec3 n, vec3 ref,  vec3 refraction, vec3 eye, float occ, float occ2, float t, vec3 rd)
 // vec4 col = vec4(vec3(0.5),1);
 	vec3 col = THIS_Color;
 	vec3 uv = (matIn.pos * rotateMatrix(radians(THIS_Rotate)) / THIS_Scale) - THIS_Offset;
