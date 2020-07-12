@@ -472,4 +472,25 @@ vec3 sdBorderedVoronoi( in vec2 x, float offset )
     return vec3( md, mr );
 }
 
+// https://www.shadertoy.com/view/4ds3zn
+float sdApollonian( vec3 p, float s, float scale, out vec4 orb) {
+
+	orb = vec4(1000.0);
+
+	for( int i=0; i<8;i++ )
+	{
+		p = -1.0 + 2.0*fract(0.5*p+0.5);
+
+		float r2 = dot(p,p);
+
+        orb = min( orb, vec4(abs(p),r2) );
+
+		float k = s/r2;
+		p     *= k;
+		scale *= k;
+	}
+
+	return 0.25*abs(p.y)/scale;
+}
+
 #endif // RTK_GENERATORS
