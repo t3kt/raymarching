@@ -1,3 +1,1 @@
-Sdf thismap(vec3 p, Context ctx) {
-	return createSdf(p.AXIS - p.AXIS - THIS_Offset);
-}
+#define thismap(p, ctx) createSdf(p.AXIS - p.AXIS - THIS_Offset)
