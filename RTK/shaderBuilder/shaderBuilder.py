@@ -1,4 +1,5 @@
 import re
+from typing import List, Tuple
 
 # noinspection PyUnreachableCode
 if False:
@@ -100,25 +101,37 @@ def buildTextureDefs(dat: 'DAT', textureTable: 'DAT'):
 				f'#define {name} sTD2DInputs[{offset + i - 1}]'
 			])
 
-def buildParamAliases(dat: 'DAT', paramDetails: 'DAT'):
+def buildParamAliaseMacros(dat: 'DAT', paramDetails: 'DAT'):
 	dat.clear()
+	for name, expr in _getParamAliases(paramDetails):
+		dat.appendRow([f'#define {name} {expr}'])
+
+def buildParamAliasTable(dat: 'DAT', paramDetails: 'DAT'):
+	dat.clear()
+	dat.appendRow(['before', 'after'])
+	for name, expr in _getParamAliases(paramDetails):
+		dat.appendRow([name, expr])
+
+def _getParamAliases(paramDetails: 'DAT') -> List[Tuple[str, str]]:
 	suffixes = 'xyzw'
+	results = []
 	for i in range(paramDetails.numRows - 1):
 		tupletName = paramDetails[i + 1, 'tuplet']
 		size = int(paramDetails[i + 1, 'size'])
 		if size == 1:
 			name = paramDetails[i + 1, 'part1']
-			dat.appendRow([f'#define {name} vecParams[{i}].x'])
+			results.append((str(name), f'vecParams[{i}].x'))
 		else:
 			if size == 4:
-				dat.appendRow([f'#define {tupletName} vecParams[{i}]'])
+				results.append((str(tupletName), f'vecParams[{i}]'))
 			else:
-				dat.appendRow([f'#define {tupletName} vec{size}(vecParams[{i}].{suffixes[:size]})'])
+				results.append((str(tupletName), f'vec{size}(vecParams[{i}].{suffixes[:size]})'))
 			for partI in range(1, 5):
 				name = paramDetails[i + 1, f'part{partI}']
 				if name:
 					suffix = suffixes[partI - 1]
-					dat.appendRow([f'#define {name} vecParams[{i}].{suffix}'])
+					results.append((str(name), f'vecParams[{i}].{suffix}'))
+	return results
 
 def stripComments(code):
 	if not code:
