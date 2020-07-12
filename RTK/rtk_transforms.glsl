@@ -86,40 +86,6 @@ vec3 trans_moduloXYZ(vec3 p, float sizeX, float sizeY, float sizeZ) {
 
 #endif // RTK_USE_MODULO
 
-#ifdef RTK_USE_MOD_POLAR
-
-vec3 trans_modPolarX(vec3 p, float repetitions, float angleOffset) {
-	mat3 r = TDRotateOnAxis(radians(angleOffset), vec3(1, 0, 0));
-	p *= -r;
-	vec2 temp = p.yz;
-	pModPolar(temp, repetitions);
-	p.yz = temp;
-	p*= r;
-	return p;
-}
-
-vec3 trans_modPolarY(vec3 p, float repetitions, float angleOffset) {
-	mat3 r = TDRotateOnAxis(radians(angleOffset), vec3(0, 1, 0));
-	p *= -r;
-	vec2 temp = p.xz;
-	pModPolar(temp, repetitions);
-	p.xz = temp;
-	p*= r;
-	return p;
-}
-
-vec3 trans_modPolarZ(vec3 p, float repetitions, float angleOffset) {
-	mat3 r = TDRotateOnAxis(radians(angleOffset), vec3(0, 0, 1));
-	p *= -r;
-	vec2 temp = p.xy;
-	pModPolar(temp, repetitions);
-	p.xy = temp;
-	p*= r;
-	return p;
-}
-
-#endif // RTK_USE_MOD_POLAR
-
 #ifdef RTK_USE_MIRROR_OCTANT
 
 vec3 trans_mirrorOctantXY(vec3 p, float sizeX, float sizeY, float offsetX, float offsetY, float rotateAxis) {

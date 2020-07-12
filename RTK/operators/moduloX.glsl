@@ -1,0 +1,1 @@
+#define thismap(p, ctx) inputOp1(trans_moduloX(p, THIS_Size, THIS_Mirror), ctx)
