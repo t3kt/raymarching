@@ -114,24 +114,25 @@ def buildParamAliasTable(dat: 'DAT', paramDetails: 'DAT'):
 
 def _getParamAliases(paramDetails: 'DAT') -> List[Tuple[str, str]]:
 	suffixes = 'xyzw'
-	results = []
+	partAliases = []
+	mainAliases = []
 	for i in range(paramDetails.numRows - 1):
 		tupletName = paramDetails[i + 1, 'tuplet']
 		size = int(paramDetails[i + 1, 'size'])
 		if size == 1:
 			name = paramDetails[i + 1, 'part1']
-			results.append((str(name), f'vecParams[{i}].x'))
+			mainAliases.append((str(name), f'vecParams[{i}].x'))
 		else:
 			if size == 4:
-				results.append((str(tupletName), f'vecParams[{i}]'))
+				mainAliases.append((str(tupletName), f'vecParams[{i}]'))
 			else:
-				results.append((str(tupletName), f'vec{size}(vecParams[{i}].{suffixes[:size]})'))
+				mainAliases.append((str(tupletName), f'vec{size}(vecParams[{i}].{suffixes[:size]})'))
 			for partI in range(1, 5):
 				name = paramDetails[i + 1, f'part{partI}']
 				if name:
 					suffix = suffixes[partI - 1]
-					results.append((str(name), f'vecParams[{i}].{suffix}'))
-	return results
+					partAliases.append((str(name), f'vecParams[{i}].{suffix}'))
+	return partAliases + mainAliases
 
 def stripComments(code):
 	if not code:
