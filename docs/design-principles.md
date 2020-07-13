@@ -11,3 +11,7 @@ The chain of definition tables should only be cooked when a setup activity occur
 While improving the speed of setup activities is also important, runtime performance should not be sacrificed to achieve it. There can be a significant stall time when the shader needs to be rebuilt. Note that this is a significant departure from the original [TDraymarchToolkit](https://github.com/hrtlacek/TDraymarchToolkit), which included a rendering shader inside each `ROP` in order to provide an interactive viewer.
 
 There are a variety of tools that ease of use during setup (including a popup dialog to create new `ROP`s and a `ROP` inspector.
+
+## Readability of Generated Shader
+
+During the development and debugging process, it is important to be able to read through the generated code and examine any compilation errors. There is a trade-off between readability and performance during both setup and runtime. When possible, the systems that build the shaders provide settings that can be used to enable or disable various types of optimizations, such as inlining references to parameter names.
