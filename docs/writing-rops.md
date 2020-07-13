@@ -8,9 +8,15 @@ The code is specified in a `DAT`, which is then modified in several ways so it c
 
 The function (or preprocessor `#define`) is written with the name `thismap`, which then gets replaced with a unique name specific to the `ROP` instance (using its path).
 
+```glsl
+Sdf thismap(vec3 p, Context ctx) {
+	return createSdf(length(p - vec3(0.5)));
+}
+```
+
 ### Parameters
 
-To refer to the parameters of the `ROP`, the prefix `THIS_` is used followed by the parameter name. In the case of tuple (multi-part) parameters, the names of the individual parts can be used, as can the name of the tuple itself, which evaluates to a `vecN` of the relevant size.
+To refer to the parameters of the `ROP`, use `THIS_` followed by the parameter name. In the case of tuple (multi-part) parameters, the names of the individual parts can be used, as can the name of the tuple itself, which evaluates to a `vecN` of the relevant size.
 
 For example, if a `ROP` has parameters `Translate[xy]`, it could either use `THIS_Translatex` ( a single`float`) or `THIS_Translate` (a `vec2` containing both parts).
 
