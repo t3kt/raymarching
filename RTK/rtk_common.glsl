@@ -322,3 +322,46 @@ int quadrantIndex(ivec2 cell) {
 float ndot( in vec2 a, in vec2 b ) { return a.x*b.x - a.y*b.y; }
 float dot2( in vec2 v ) { return dot(v,v); }
 float dot2( in vec3 v ) { return dot(v,v); }
+
+// https://github.com/msfeldstein/glsl-map/blob/master/index.glsl
+
+float mapRange(float value, float inMin, float inMax, float outMin, float outMax) {
+  return outMin + (outMax - outMin) * (value - inMin) / (inMax - inMin);
+}
+
+vec2 mapRange(vec2 value, vec2 inMin, vec2 inMax, vec2 outMin, vec2 outMax) {
+  return outMin + (outMax - outMin) * (value - inMin) / (inMax - inMin);
+}
+
+vec3 mapRange(vec3 value, vec3 inMin, vec3 inMax, vec3 outMin, vec3 outMax) {
+  return outMin + (outMax - outMin) * (value - inMin) / (inMax - inMin);
+}
+
+vec4 mapRange(vec4 value, vec4 inMin, vec4 inMax, vec4 outMin, vec4 outMax) {
+  return outMin + (outMax - outMin) * (value - inMin) / (inMax - inMin);
+}
+
+float map01(float value, float inMin, float inMax) {
+  return (value - inMin) / (inMax - inMin);
+}
+
+vec2 map01(vec2 value, vec2 inMin, vec2 inMax) {
+  return (value - inMin) / (inMax - inMin);
+}
+
+vec3 map01(vec3 value, vec3 inMin, vec3 inMax) {
+  return (value - inMin) / (inMax - inMin);
+}
+
+vec4 map01(vec4 value, vec4 inMin, vec4 inMax) {
+  return (value - inMin) / (inMax - inMin);
+}
+
+// https://github.com/glslify/glsl-easings
+float cubicInOut(float t) {
+  return t < 0.5
+    ? 4.0 * t * t * t
+    : 0.5 * pow(2.0 * t - 2.0, 3.0) + 1.0;
+}
+
+#define linear(t) (t)
