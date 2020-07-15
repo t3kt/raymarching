@@ -8,10 +8,7 @@ Sdf thismap(vec3 p, Context ctx) {
 	ratio = INTERPOLATION(ratio);
 	vec2 pivot = mix(THIS_Pivot1, THIS_Pivot2, ratio);
 	vec2 scale = mix(THIS_Scale1, THIS_Scale2, ratio);
-	vec2 q = (p.PLANE + pivot);
-	q /= scale;
-	q -= pivot;
-	p.PLANE = q;
+	p.PLANE = ((p.PLANE - pivot) / scale) + pivot;
 	Sdf res = inputOp1(p, ctx);
 	res.x /= length(scale);
 	return res;
