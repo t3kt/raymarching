@@ -62,36 +62,50 @@ Sdf comb_pipe(Sdf res1, Sdf res2, float radius) {
 
 Sdf comb_unionRound(Sdf res1, Sdf res2, float radius) {
 	res1.x = fOpUnionRound(res1.x, res2.x, radius);
+	res1.interpolant = clamp(0.5 - 0.5*(res2.x+res1.x)/radius, 0., 1.);
+	res1.material2 = res2.y;
 	return res1;
 }
 
 Sdf comb_intersectRound(Sdf res1, Sdf res2, float radius) {
 	res1.x = fOpIntersectionRound (res1.x, res2.x, radius);
+	res1.interpolant = clamp(0.5 - 0.5*(res2.x+res1.x)/radius, 0., 1.);
+	res1.material2 = res2.y;
 	return res1;
 }
 
 Sdf comb_diffRound(Sdf res1, Sdf res2, float radius) {
 	res1.x = fOpDifferenceRound (res1.x, res2.x, radius);
+	res1.interpolant = clamp(0.5 - 0.5*(res2.x+res1.x)/radius, 0., 1.);
+	res1.material2 = res2.y;
 	return res1;
 }
 
 Sdf comb_intersectChamfer(Sdf res1, Sdf res2, float radius) {
 	res1.x = fOpIntersectionChamfer(res1.x, res2.x, radius);
+	res1.interpolant = clamp(0.5 - 0.5*(res2.x+res1.x)/radius, 0., 1.);
+	res1.material2 = res2.y;
 	return res1;
 }
 
 Sdf comb_unionChamfer(Sdf res1, Sdf res2, float radius) {
 	res1.x = fOpUnionChamfer(res1.x, res2.x, radius);
+	res1.interpolant = clamp(0.5 - 0.5*(res2.x+res1.x)/radius, 0., 1.);
+	res1.material2 = res2.y;
 	return res1;
 }
 
 Sdf comb_diffChamfer(Sdf res1, Sdf res2, float radius) {
 	res1.x = fOpDifferenceChamfer(res1.x, res2.x, radius);
+	res1.interpolant = clamp(0.5 - 0.5*(res2.x+res1.x)/radius, 0., 1.);
+	res1.material2 = res2.y;
 	return res1;
 }
 
 Sdf comb_engrave(Sdf res1, Sdf res2, float radius) {
 	res1.x = fOpEngrave(res1.x, res2.x, radius);
+	res1.interpolant = clamp(0.5 - 0.5*(res2.x+res1.x)/radius, 0., 1.);
+	res1.material2 = res2.y;
 	return res1;
 }
 
