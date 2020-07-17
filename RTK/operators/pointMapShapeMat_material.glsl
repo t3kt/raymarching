@@ -1,0 +1,1 @@
+return vec4(THIS_getColor(matIn, lights[0], lightColors[0].rgb), 1);
