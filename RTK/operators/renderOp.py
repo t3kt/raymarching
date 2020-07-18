@@ -3,7 +3,7 @@ if False:
 	# noinspection PyUnresolvedReferences
 	from _stubs import *
 
-def updateTextureInputs(firstInput):
+def updateTextureInputs(firstInput=None):
 	sources = op('texture_sources')
 	render = op('glsl_render')
 	if not firstInput:
