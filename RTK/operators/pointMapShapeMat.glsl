@@ -4,7 +4,7 @@ Sdf thismap(vec3 p, Context ctx) {
 	return res;
 }
 
-vec3 THIS_getColor(MatInputs matIn, vec3 lightPos, vec3 lightColor) {
+vec3 THIS_getColor(Sdf res, vec3 p) {
 	vec3 col = THIS_Fillcolor;
 
 

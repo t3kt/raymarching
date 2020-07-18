@@ -33,9 +33,9 @@ void main()
 {
 	vec2 resolution = uTDOutputInfo.res.zw;
 	vec2 fragCoord = vUV.st;//*resolution;
-	vec3 pos = texture(sTD2DInputs[0], fragCoord).xyz;
+	vec3 p = texture(sTD2DInputs[0], fragCoord).xyz;
 
-	Sdf res = map(pos*2.0 - vec3(1));
+	Sdf res = map(p*2.0 - vec3(1));
 
 	vec4 col = getPointColor(res, p);
 
