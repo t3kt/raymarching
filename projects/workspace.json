@@ -66,5 +66,8 @@
         }
       }
     ]
+  },
+  "editorTools": {
+    "Customtoolscript": {"$":  "op.rtk.op('editorTools')"}
   }
 }
