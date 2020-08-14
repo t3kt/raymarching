@@ -3,83 +3,57 @@
 
 #ifdef RTK_USE_MODULO
 
-vec3 trans_moduloX(vec3 p, float size){
-	float q = p.x;
-	float halfsize = size*0.5;
-	float c = floor((q + halfsize)/size);
-	q = mod(q + halfsize, size) - halfsize;
-	p.x  = q;
-	return p;
-}
-
-vec3 trans_moduloY(vec3 p, float size){
-	float q = p.y;
-	float halfsize = size*0.5;
-	float c = floor((q + halfsize)/size);
-	q = mod(q + halfsize, size) - halfsize;
-	p.y  = q;
-	return p;
-}
-
-vec3 trans_moduloZ(vec3 p, float size){
-	float q = p.z;
-	float halfsize = size*0.5;
-	float c = floor((q + halfsize)/size);
-	q = mod(q + halfsize, size) - halfsize;
-	p.z  = q;
-	return p;
-}
-
-vec3 trans_moduloX(vec3 p, float size, float mirror) {
-	float temp = p.x;
+vec3 trans_moduloX(vec3 p, float size, float shiftX, float mirror) {
+	float temp = p.x + shiftX;
 	if (mirror > 0.5) { pModMirror1(temp, size); }
 	else { pMod1(temp, size); }
 	p.x = temp;
 	return p;
 }
 
-vec3 trans_moduloY(vec3 p, float size, float mirror) {
-	float temp = p.y;
+vec3 trans_moduloY(vec3 p, float size, float shift, float mirror) {
+	float temp = p.y + shift;
 	if (mirror > 0.5) { pModMirror1(temp, size); }
 	else { pMod1(temp, size); }
 	p.y = temp;
 	return p;
 }
 
-vec3 trans_moduloZ(vec3 p, float size, float mirror) {
-	float temp = p.z;
+vec3 trans_moduloZ(vec3 p, float size, float shift, float mirror) {
+	float temp = p.z + shift;
 	if (mirror > 0.5) { pModMirror1(temp, size); }
 	else { pMod1(temp, size); }
 	p.z = temp;
 	return p;
 }
 
-vec3 trans_moduloXY(vec3 p, float sizeX, float sizeY, float mirror) {
-	vec2 temp = p.xy;
+vec3 trans_moduloXY(vec3 p, float sizeX, float sizeY, float shiftX, float shiftY, float mirror) {
+	vec2 temp = p.xy + vec2(shiftX, shiftY);
 	if (mirror > 0.5) { pModMirror2(temp, vec2(sizeX, sizeY)); }
 	else { pMod2(temp, vec2(sizeX, sizeY)); }
 	p.xy = temp;
 	return p;
 }
 
-vec3 trans_moduloXZ(vec3 p, float sizeX, float sizeZ, float mirror) {
-	vec2 temp = p.xz;
+vec3 trans_moduloXZ(vec3 p, float sizeX, float sizeZ, float shiftX, float shiftZ, float mirror) {
+	vec2 temp = p.xz + vec2(shiftX, shiftZ);
 	if (mirror > 0.5) { pModMirror2(temp, vec2(sizeX, sizeZ)); }
 	else { pMod2(temp, vec2(sizeX, sizeZ)); }
 	p.xz = temp;
 	return p;
 }
 
-vec3 trans_moduloYZ(vec3 p, float sizeY, float sizeZ, float mirror) {
-	vec2 temp = p.yz;
+vec3 trans_moduloYZ(vec3 p, float sizeY, float sizeZ, float shiftY, float shiftZ, float mirror) {
+	vec2 temp = p.yz + vec2(shiftY, shiftZ);
 	if (mirror > 0.5) { pModMirror2(temp, vec2(sizeY, sizeZ)); }
 	else { pMod2(temp, vec2(sizeY, sizeZ)); }
 	p.yz = temp;
 	return p;
 }
 
-vec3 trans_moduloXYZ(vec3 p, float sizeX, float sizeY, float sizeZ) {
+vec3 trans_moduloXYZ(vec3 p, float sizeX, float sizeY, float sizeZ, float shiftX, float shiftY, float shiftZ) {
 	// TODO: MIRROR SUPPORT
+	p += vec3(shiftX, shiftY, shiftZ);
 	pMod3(p, vec3(sizeX, sizeY, sizeZ));
 	return p;
 }

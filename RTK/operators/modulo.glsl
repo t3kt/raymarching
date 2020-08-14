@@ -1,7 +1,5 @@
 Sdf thismap(vec3 p, Context ctx) {
-	vec3 offset = THIS_Offset;
-	p += offset;
 BODY();
-	p -= offset;
+	p -= THIS_Offset;
 	return inputOp1(p, ctx);
 }
