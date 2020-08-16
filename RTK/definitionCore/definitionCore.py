@@ -152,6 +152,8 @@ def buildDefinition(dat: 'DAT'):
 		['funcType', parent().par.Functype.eval() if host else ''],
 		['inputName1', parent().par.Inputname1],
 		['inputName2', parent().par.Inputname2],
+		['inputName3', parent().par.Inputname3],
+		['inputName4', parent().par.Inputname4],
 		['paramTable', paramTable.path if host and _isNonEmpty(paramTable) else ''],
 		['paramTupletTable', paramTupletTable.path if host and _isNonEmpty(paramTupletTable) else ''],
 		['paramDetailTable', paramDetailTable.path if host and _isNonEmpty(paramDetailTable) else ''],
