@@ -1,0 +1,1 @@
+#define thismap(p, ctx) comb_smoothUnion(inputOp1(p, ctx), inputOp2(p, ctx), THIS_Amount*inputOp3(p, ctx))

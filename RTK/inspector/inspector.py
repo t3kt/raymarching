@@ -197,7 +197,7 @@ class Inspector:
 		for row in range(1, definitions.numRows):
 			name = definitions[row, 'name'].val
 			node = _Node(name)
-			for col in ['inputName1', 'inputName2']:
+			for col in ['inputName1', 'inputName2', 'inputName3', 'inputName4']:
 				inputName = definitions[row, col].val
 				if inputName:
 					node.inputNames.append(inputName)
