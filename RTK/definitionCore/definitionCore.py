@@ -1,6 +1,8 @@
 import re
 from typing import Dict, List, Union
 
+from pypreprocessor import Preprocessor
+
 # noinspection PyUnreachableCode
 if False:
 	# noinspection PyUnresolvedReferences
@@ -121,10 +123,14 @@ def prepareTextureTable(dat):
 
 _lineCommentRx = re.compile('//.*\n')
 _spaceRx = re.compile('\\s+')
+_localMacroEscape = '//-#'
 
 def prepareShaderCode(code: str):
 	if not code:
 		return ''
+	if _localMacroEscape in code:
+		preproc = Preprocessor(defines=[], escape=_localMacroEscape)
+		code = preproc.parse(code)
 	# strip line comments
 	code = _lineCommentRx.sub(' ', code)
 	# inject name
