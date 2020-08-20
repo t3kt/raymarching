@@ -365,3 +365,18 @@ float cubicInOut(float t) {
 }
 
 #define linear(t) (t)
+
+// numeric values of "Extend" par menu items
+#define EXTEND_MENU_HOLD 0
+#define EXTEND_MENU_ZERO 1
+#define EXTEND_MENU_REPEAT 2
+#define EXTEND_MENU_MIRROR 3
+
+
+float modZigZag(float p) {
+	float modded = mod(p, 2.);
+	if (modded > 1) {
+		return 2 - modded;
+	}
+	return modded;
+}
