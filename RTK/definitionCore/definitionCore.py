@@ -1,8 +1,6 @@
 import re
 from typing import Dict, List, Union
 
-from pypreprocessor import Preprocessor
-
 # noinspection PyUnreachableCode
 if False:
 	# noinspection PyUnresolvedReferences
@@ -128,12 +126,12 @@ def prepareShaderCode(code: str):
 	if not code:
 		return ''
 	code = _stripLineComments(code)
-	code = _processLocalMacros(code)
 	# inject name
 	name = str(parent().par.Name)
 	code = code.replace('@', name + '_')
 	code = code.replace('THIS', name)
-	code = _spaceRx.sub(' ', code)
+	code = code.replace('thismap', name)
+	# code = _spaceRx.sub(' ', code)
 	return code
 
 def _stripLineComments(code: str):
@@ -148,49 +146,6 @@ def _stripLineComments(code: str):
 		else:
 			outLines.append(line.split('//', maxsplit=1)[0])
 	return '\n'.join(outLines)
-
-def _getLocalMacros():
-	par = parent().par['Localmacrotable']
-	if not par:
-		return []
-	table = par.eval()  # type: DAT
-	return [
-		(
-			row[0].val,
-			row[1].val if len(row) > 1 else '',
-		)
-		for row in table.rows()
-	]
-
-def _processLocalMacros(code: str):
-	'''
-	Handles code like this:
-	vec4 stuff() {
-	//-#ifdef USING_STUFF
-	return calculateStuff();
-	//-#else
-	return vec4(0);
-	//-#endif
-
-	then also replaces any occurrences of local macros in text (after preprocessing) with the
-	associated value
-	'''
-	if not code:
-		return ''
-	hasPreproc = _localMacroEscape in code
-	macros = _getLocalMacros()
-	if hasPreproc:
-		preproc = Preprocessor(
-			defines=[macro[0] for macro in macros],
-			removeMeta=True,
-			escape=_localMacroEscape,
-		)
-		code = preproc.parse(code)
-	if macros:
-		for macro in macros:
-			if macro[1]:
-				code = code.replace(macro[0], macro[1])
-	return code
 
 def buildDefinition(dat: 'DAT'):
 	dat.clear()
