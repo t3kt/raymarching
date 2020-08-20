@@ -212,7 +212,7 @@ class Preprocessor:
 		self.__reset_internal()
 		try:
 			# process the input file
-			for line in inputCode.splitlines():
+			for line in inputCode.splitlines(keepends=True):
 				self.__linenum += 1
 				# to squelch or not to squelch
 				squelch, metaData = self.lexer(line)
