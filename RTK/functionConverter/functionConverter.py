@@ -1,3 +1,4 @@
+import re
 # noinspection PyUnreachableCode
 if False:
 	# noinspection PyUnresolvedReferences
@@ -16,6 +17,9 @@ def _convertFunctionBody(inputCode: str, inputType: str, inputName: str):
 	# # or... #define FOO(p, ctx)  p.x + FOO_stuff
 	return conversion(inputCode, inputName)
 
+def _replaceName(inputCode: str, inputName: str, oldName: str):
+	return re.sub(r'\b' + re.escape(inputName) + r'\b', oldName, inputCode, count=1)
+
 def _scalarToVector(inputCode: str, inputName: str):
 	oldName = inputName + '_ORIG'
 	outputPart = parent().par.Outputvectorpart.eval()
@@ -26,7 +30,7 @@ def _scalarToVector(inputCode: str, inputName: str):
 	else:
 		wrapperFunc = 'vec4 {}(vec3 p, Context ctx) {{float v = {}(p, ctx); return {};}}'.format(
 			inputName, oldName, _fillVectorPart('v', outputPart))
-		return inputCode.replace(inputName, oldName, 1) + wrapperFunc
+		return _replaceName(inputCode, inputName, oldName) + wrapperFunc
 
 def _sdfToVector(inputCode: str, inputName: str):
 	oldName = inputName + '_ORIG'
@@ -38,7 +42,7 @@ def _sdfToVector(inputCode: str, inputName: str):
 	else:
 		wrapperFunc = 'vec4 {}(vec3 p, Context ctx) {{float v = {}(p, ctx).x; return {};}}'.format(
 			inputName, oldName, _fillVectorPart('v', outputPart))
-		return inputCode.replace(inputName, oldName, 1) + wrapperFunc
+		return _replaceName(inputCode, inputName, oldName) + wrapperFunc
 
 def _scalarToSdf(inputCode: str, inputName: str):
 	oldName = inputName + '_ORIG'
@@ -81,7 +85,7 @@ def _sdfToScalar(inputCode: str, inputName: str):
 
 def _convertWithMacro(inputCode: str, inputName: str, oldName: str, expression: str):
 	return '\n'.join([
-		inputCode.replace(inputName, oldName, 1),
+		_replaceName(inputCode, inputName, oldName),
 		f'#define {inputName}(p, ctx)  {expression}'
 	])
 
