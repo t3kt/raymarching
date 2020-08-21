@@ -126,6 +126,9 @@ def prepareShaderCode(code: str):
 	if not code:
 		return ''
 	code = _stripLineComments(code)
+	currentFuncTypeDat = op('current_funcType')
+	code = re.sub(r'\bTHIS_RETURN_TYPE\b', currentFuncTypeDat[1, 'returnType'].val, code)
+	code = re.sub(r'\bTHIS_COORD_TYPE\b', currentFuncTypeDat[1, 'coordType'].val, code)
 	# inject name
 	name = str(parent().par.Name)
 	code = code.replace('@', name + '_')
