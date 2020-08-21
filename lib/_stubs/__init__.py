@@ -810,6 +810,7 @@ class tdu:
 	@staticmethod
 	def digits(s: str) -> _T.Optional[int]: pass
 
+	ArcBall = _ArcBall
 	Dependency = _Dependency
 	Position = _Position
 	Vector = _Vector
@@ -822,15 +823,16 @@ class tdu:
 	def split(string, eval=False) -> _T.List[str]: pass
 
 	@staticmethod
+	def expand(pattern: str) -> _T.List[str]: pass
+
+	@staticmethod
 	def match(pattern, inputList, caseSensitive=True) -> _T.List[str]: pass
 
 	@staticmethod
-	def collapsePath(path: str) -> str: pass
+	def collapsePath(path: str, asExpression=False) -> str: pass
 
 	@staticmethod
 	def expandPath(path: str) -> str: pass
-
-	ArcBall = _ArcBall
 
 	fileTypes = {
 		'audio': ['aif', 'aiff', 'flac', 'm4a', 'mp3', 'ogg', 'wav'],
@@ -935,6 +937,8 @@ class oscoutDAT(DAT):
 
 	def send(self, *messages: str, terminator='') -> int: pass
 
+oscinDAT = oscoutDAT
+
 class CHOP(OP):
 	numChans: int
 	numSamples: int
@@ -1001,7 +1005,7 @@ class COMP(OP):
 	def collapseSelected(self): pass
 	def copyOPs(self, listOfOPs: _T.List['_AnyOpT']) -> _T.List['_AnyOpT']: pass
 	def initializeExtensions(self, index: int = None) -> _T.Any: pass
-	def loadTox(self, filepath: str, unwired=False, pattern: str = None, password: str = None) -> 'OP': pass
+	def loadTox(self, filepath: str, unwired=False, pattern: str = None, password: str = None) -> 'COMP': pass
 	def resetNetworkView(self, recurse: bool = False): pass
 	def save(self, filepath: str, createFolders: bool = False, password: str = None) -> 'str': pass
 	def saveExternalTox(self, recruse: bool = False, password: str = None) -> int: pass
@@ -1274,6 +1278,41 @@ class TOP(OP):
 
 	def save(self, path): pass
 
+class textTOP(TOP):
+	curText: str
+	cursorEnd: int
+	cursorStart: int
+	selectedText: str
+	textHeight: int
+	textWidth: int
+	numLines: int
+	ascender: float
+	descender: float
+	capHeight: float
+	xHeight: float
+	lineGap: float
+
+	def fontSupportsCharts(self, s: str) -> bool: pass
+	def evalTextSize(self, s: str) -> _T.Tuple[float, float]: pass
+	def lines(self) -> _T.List['TextLine']: pass
+
+class textSOP(SOP):
+	numLines: int
+	ascender: float
+	descender: float
+	capHeight: float
+	xHeight: float
+	lineGap: float
+	numGlyphs: int
+
+	def fontSupportsCharts(self, s: str) -> bool: pass
+	def lines(self) -> _T.List['TextLine']: pass
+
+class TextLine:
+	text: str
+	origin: 'tdu.Position'
+	lineWidth: float
+
 class MAT(OP): pass
 
 _AnyOpT = _T.Union[OP, DAT, COMP, CHOP, SOP, MAT, '_AnyCompT']
@@ -1282,9 +1321,12 @@ baseCOMP = COMP
 panelCOMP = PanelCOMP
 evaluateDAT = mergeDAT = nullDAT = parameterexecuteDAT = parameterDAT = tableDAT = textDAT = scriptDAT = DAT
 parameterCHOP = nullCHOP = selectCHOP = inCHOP = outCHOP = CHOP
-animationCOMP = COMP
 inTOP = outTOP = TOP
 importselectSOP = SOP
+
+class animationCOMP(COMP):
+	def setKeyframe(self, position: float, channel='*', value=None, function: str = None): pass
+	def deleteKeyframe(self, position: float, channel='*', value=None, function: str = None): pass
 
 class objectCOMP(COMP):
 	localTransform: _Matrix
