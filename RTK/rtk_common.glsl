@@ -380,3 +380,26 @@ float modZigZag(float p) {
 	}
 	return modded;
 }
+vec2 modZigZag(vec2 p) {
+	vec2 modded = mod(p, 2.);
+	return vec2(
+		modded.x > 1 ? (2 - modded.x) : modded.x,
+		modded.y > 1 ? (2 - modded.y) : modded.y);
+}
+
+vec4 textureLookup(sampler2D sampler, vec2 coord, int extendMode) {
+	switch(extendMode) {
+		case EXTEND_MENU_HOLD:
+			return texture(sampler, clamp(coord, 0, 1));
+		case EXTEND_MENU_ZERO:
+			if (coord.x >= 0 && coord.x <= 1 && coord.y >= 0 && coord.y <= 1) {
+				return texture(sampler, coord);
+			} else {
+				return vec4(0);
+			}
+		case EXTEND_MENU_MIRROR:
+			return texture(sampler, modZigZag(coord));
+		default:
+			return texture(sampler, fract(coord));
+	}
+}
