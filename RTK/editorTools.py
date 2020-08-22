@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Callable, List
+import re
 
 # noinspection PyUnreachableCode
 if False:
@@ -94,3 +95,30 @@ def getEditorTools() -> List[_ToolDefinition]:
 		_createTool(_Tools.addCameraControls, 'Add Camera Controls')
 	]
 	return tools
+
+def setUpROPMasterParams(o: 'COMP'):
+	fixToxParams(o)
+	fixCloneParams(o)
+
+_isDevModeExpr = "hasattr(op, 'rtk') and getattr(op.rtk.par, 'Devmode', False)"
+
+def fixToxParams(o: 'COMP'):
+	if o.par.externaltox.mode == ParMode.EXPRESSION:
+		expr = o.par.externaltox.expr
+		match = re.match(r"^'([\w\/\.]+\.tox)'\s?if\b", expr)
+		if not match:
+			return
+		toxPath = match.group(1)
+		o.par.externaltox.expr = ''
+		o.par.externaltox.val = toxPath
+	o.par.reloadtoxonstart.expr = ' and '.join(
+		[
+			'me.par.clone.eval() is me',
+			_isDevModeExpr,
+			"mod.os.path.exists(me.par.externaltox.eval())",
+		])
+
+def fixCloneParams(o: 'COMP'):
+	o.par.clone.expr = r"(op.rtk.op('" + op.rtk.relativePath(o) + r"') if hasattr(op, 'rtk') else None) or ''"
+	o.par.enablecloning.expr = _isDevModeExpr
+
