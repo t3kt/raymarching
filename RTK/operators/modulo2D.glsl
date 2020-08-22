@@ -1,4 +1,4 @@
-Sdf thismap(COORD p, Context ctx) {
+Sdf thismap(THIS_COORD_TYPE p, Context ctx) {
 	vec2 q = p.PLANE + THIS_Shift;
 	vec2 cell;
 	switch (int(THIS_Mirrortype)) {

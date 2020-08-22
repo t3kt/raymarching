@@ -1,4 +1,4 @@
-Sdf thismap(COORD p, Context ctx) {
+Sdf thismap(THIS_COORD_TYPE p, Context ctx) {
 	float q = p.AXIS + THIS_Shift;
 	float cell = THIS_Mirrortype > 0 ? pModMirror1(q, THIS_Size) : pMod1(q, THIS_Size);
 	p.AXIS = q - THIS_Offset;

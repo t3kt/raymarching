@@ -1,4 +1,4 @@
-Sdf thismap__step(COORD p, Context ctx, Sdf res1) {
+Sdf thismap__step(THIS_COORD_TYPE p, Context ctx, Sdf res1) {
 	Sdf res2 = inputOp1(p, ctx);
 	Sdf res;
 BODY();
