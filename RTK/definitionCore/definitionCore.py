@@ -131,6 +131,8 @@ def prepareShaderCode(code: str):
 	code = re.sub(r'\bTHIS_COORD_TYPE\b', currentFuncTypeDat[1, 'coordType'].val, code)
 	# inject name
 	name = str(parent().par.Name)
+	code = code.replace('@matID', 'MAT_' + name)
+	code = code.replace('THIS_matID', 'MAT_' + name)
 	code = code.replace('@', name + '_')
 	code = code.replace('THIS', name)
 	code = code.replace('thismap', name)
