@@ -96,7 +96,10 @@ float checkersGradBox(in vec2 p)
 	return coarse+fine*0.5;//step(fract(p.x), 0.55)-step(fract(p.x), 0.5)+step(fract(p.y), 0.55)-step(fract(p.y), 0.5);
 }
 
-float castShadow(vec3 ro, vec3 rd, Sdf thisRes){
+
+Sdf castRay(in vec3 ro, in vec3 rd, float renderDepth, float prec);
+
+float softShadow(vec3 ro, vec3 rd, Sdf thisRes, vec3 lightPos){
 	float res = 1;
 	float t = 0.8;
 	vec3 pos = vec3(0);
@@ -124,6 +127,28 @@ float castShadow(vec3 ro, vec3 rd, Sdf thisRes){
 
 	return clamp(res, 0., 1.);
 }
+
+float hardShadow(vec3 ro, vec3 rd, Sdf thisRes, vec3 lightPos) {
+	const float maxDist = 50.0;
+	float shadowDist = castRay(ro, rd, maxDist, 0.0001).x;
+	float dist = length(lightPos - ro);
+	if (shadowDist < dist) {
+		return 0.1;
+	}
+	return 1.0;
+}
+
+float noShadow(vec3 ro, vec3 rd, Sdf thisRes, vec3 lightPos) {
+	return 1.0;
+}
+
+#if defined(SHADOW_TYPE_hard)
+#define castShadow hardShadow
+#elif defined(SHADOW_TYPE_none)
+#define castShadow noShadow
+#else
+#define castShadow softShadow
+#endif
 
 Sdf castRay(in vec3 ro, in vec3 rd, float renderDepth, float prec)
 {
@@ -201,8 +226,8 @@ vec4 getMat2(float m, MatInputs matIn) {
 
 		float f = checkersGradBox((1.0*pos.xz + pos.xy*2)*0.5);
 		col.rgb = 0.3 + f*vec3(0.7);//+ smoothstep(fract(f*3), 0.9,1.)*vec3(1);
-		Sdf dummy;
-		float sunShadow = smoothstep(castShadow(pos+n*0.001, 1*sunDir, dummy), 0.0, 0.05);
+		Sdf dummy = matIn.res;
+		float sunShadow = smoothstep(castShadow(pos+n*0.001, 1*sunDir, dummy, lightPos), 0.0, 0.05);
 		col.rgb *= 0.5+sunShadow*0.5;
 	}
 	// ========Standard Gray material
@@ -211,8 +236,9 @@ vec4 getMat2(float m, MatInputs matIn) {
 		vec3 sunColor = vec3(5.8, 4.0, 3.5);
 		vec3 skyColor = vec3(0.5, 0.8, 0.9);
 		float sunDiffuse = clamp(dot(n, sunDir), 0, 1.);
-		Sdf dummy;
-		float sunShadow = 1-step(castShadow(pos+n*0.001, 1*sunDir, dummy), 0.0);
+		Sdf dummy = matIn.res;
+//		float sunShadow = 1-step(castShadow(pos+n*0.001, 1*sunDir, dummy, lightPos), 0.0);
+		float sunShadow = castShadow(pos+n*0.001, sunDir, dummy, lightPos);
 		float skyDiffuse = clamp(0.5+0.5*dot(n, vec3(0, 1, 0)), 0, 1);
 		float sunSpec = pow(max(dot(-rd, n), 0.), 5)*0.5;
 		vec3 col = mate *sunColor*sunDiffuse*sunShadow;
@@ -238,7 +264,7 @@ vec4 getMat2(float m, MatInputs matIn) {
 			vec3 lightPos = lights[0].xyz;//vec3(0,3,2);
 			vec3 sunDir = normalize(lightPos);
 			Sdf dummy;
-			float sunShadow = 1-step(castShadow(pos+n*0.001, 1*sunDir, dummy), 0.0);
+			float sunShadow = 1-step(castShadow(pos+n*0.001, 1*sunDir, dummy, lightPos), 0.0);
 			col.rgb *= saturate(abs(fract(notGrid*0.5)*1-0.9)*10)*1.3;//vec4(0,1,0,1);
 			col.rgb *= 0.5+sunShadow*0.5;
 			return col;
@@ -428,7 +454,7 @@ void main()
 			//		=================Shadows============================
 			vec3 lightPos = lights[0].xyz;
 			vec3 lightDir = 1*normalize(lightPos-pos);
-			float shadow = castShadow(pos, lightDir, res)*0.9+0.1;
+//			float shadow = castShadow(pos, lightDir, res)*0.9+0.1;
 			//		====================================================
 
 			//        float ks= 0.1;
@@ -442,7 +468,7 @@ void main()
 			//      lin += 1.0*fre*vec3(1.2,0.70,0.60)*(0.1+0.9*occ);
 
 			// add shadows======================
-			col*=  shadow*3;// something is wrong with this
+//			col*=  shadow*3;// something is wrong with this
 			//==================================
 
 			// col += 0.3*ks*4.0*vec3(0.7,0.8,1.00)*smoothstep(0.0,0.2,ref.y)*(0.05+0.95*pow(fre,5.0))*(0.5+0.5*nor.y)*occ;
